@@ -4,7 +4,7 @@ SHARED_FLAGS = -fno-builtin -O2 -nostdinc -nostdlib -ffreestanding -g -Wall -Wex
 CFLAGS = $(SHARED_FLAGS)
 ASFLAGS = $(SHARED_FLAGS) -Wa,--divide
 
-OBJS := boot.o kernel.o scrn.o mem.o
+OBJS := boot.o kernel.o scrn.o mem.o basicio.o
 
 DFILES = $(patsubst %.o,%.d,$(OBJS))
 

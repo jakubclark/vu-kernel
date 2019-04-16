@@ -2,7 +2,7 @@
 #include "mem.h"
 #include "types.h"
 
-#define COLOURS 0xF0
+#define COLOURS 0x0F
 #define COLS 80
 #define ROWS 25
 #define VGA_START 0xB8000
@@ -161,7 +161,7 @@ void clear() {
   for (i = 0; i < ROWS * COLS; i++)
     putchar(' ');
   Curx = Cury = 0;
-  // Scrn[i] = EmptySpace;
+  Scrn[i] = EmptySpace;
 }
 
 void vga_init(void) {

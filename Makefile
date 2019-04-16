@@ -29,7 +29,7 @@ $(ISO_FILE): kernel
 	$(GRUB_MKRESCUE) -o $(ISO_FILE) iso
 
 qemu: $(ISO_FILE)
-	qemu-system-x86_64 -cdrom $(ISO_FILE) -serial stdio -m 1024M
+	qemu-system-x86_64 -cdrom $(ISO_FILE) -serial stdio -m 32M
 
 clean:
 	make -C vu-kernel clean
