@@ -10,7 +10,7 @@
 uint16_t *Scrn;                             // screen area
 int Curx, Cury = 0;                         // current cursor coordinates
 uint16_t EmptySpace = 0x0F << 8 | 0x20;     /* 0x20 is ascii value of space */
-colorCode defaultColor = 0x0F;
+uint16_t DefaultColor = 0x0F;
 
 /* These define our textpointer, our background and foreground
  *  colors (attributes), and x and y cursor coordinates */
@@ -31,12 +31,7 @@ void scroll(void) {
   }
 }
 
-// Print a character on the screen
-void putchar(uint8_t c) {
-  putcharCol(c, defaultColor);
-}
-
-void putcharCol(uint8_t c, colorCode color){
+void putcharCol(uint8_t c, uint16_t color){
   uint16_t *addr;
 
   // first handle a few special characters
@@ -68,20 +63,18 @@ void putcharCol(uint8_t c, colorCode color){
     Cury++;
   }
 
-  // also scroll if needed
   scroll();
 }
 
-// print a longer string
 void puts(unsigned char *str) {
   while (*str) {
-    putchar(*str);
+    putcharCol(*str, DefaultColor);
     str++;
   }
 }
 
-void putsCol(unsigned char *str, colorCode background, colorCode foreground){
-  colorCode color = background << 4 | foreground;
+void putsCol(unsigned char *str, uint16_t foreground, uint16_t background){
+  uint16_t color = background << 4 | foreground;
   while(*str){
     putcharCol(*str, color);
     str++;
@@ -124,8 +117,6 @@ void itoa(char *buf, int base, int d) {
   }
 }
 
-// Format a string and print it on the screen, just like the libc
-// function printf.
 void printf(const char *format, ...) {
   char **arg = (char **)&format;
   int c;
@@ -135,7 +126,7 @@ void printf(const char *format, ...) {
 
   while ((c = *format++) != 0) {
     if (c != '%')
-      putchar(c);
+      putcharCol(c, DefaultColor);
     else {
       char *p;
 
@@ -156,22 +147,21 @@ void printf(const char *format, ...) {
 
       string:
         while (*p)
-          putchar(*p++);
+          putcharCol(*p++, DefaultColor);
         break;
 
       default:
-        putchar(*((int *)arg++));
+        putcharCol(*((int *)arg++), DefaultColor);
         break;
       }
     }
   }
 }
 
-// Clear the screen
 void clear() {
   int i;
   for (i = 0; i < ROWS * COLS; i++)
-    putchar(' ');
+    putcharCol(' ', DefaultColor);
   Curx = Cury = 0;
   Scrn[i] = EmptySpace;
 }

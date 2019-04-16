@@ -7,7 +7,7 @@
 #define BROWN 6
 #define LIGHTGRAY 7
 #define DARKGRAY 8
-#define LIGHTBLUe 9
+#define LIGHTBLUE 9
 #define LIGHTGREEN 10
 #define LIGHTCYAN 11
 #define LIGHTRED 12
