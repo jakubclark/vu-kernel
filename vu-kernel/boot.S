@@ -69,7 +69,7 @@ _start:
 
         mov $0, %ecx
 
-        movl $_kernel_physical_end, %esi
+        movl $end, %esi
         shrl $TWO_MEGABYTES_SHIFT, %esi
         addl $1, %esi
 
