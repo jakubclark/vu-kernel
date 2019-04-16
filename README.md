@@ -27,3 +27,15 @@ make qemu
 ```
 
 This will create a bootable `.iso` file, used by `qemu`.
+
+## TODO
+
+- [x] Bootstrapping
+- [x] Hello World!
+- [x] Printing to the screen
+- [ ] Reading from the keyboard
+- [ ] Setting up the Global Descriptor Table
+- [ ] Print Multiboot Information on startup
+- [ ] Interrupt Handling
+- [ ] Physical Memory
+- [ ] Virtual Memory
