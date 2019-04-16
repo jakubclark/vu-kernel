@@ -9,6 +9,8 @@ extern void clear();
 extern void putchar(uint8_t c);
 /* Print the `str` to the screen */
 extern void puts(uint8_t *str);
+/* Print the `str` with `background` and `foreground` */
+extern void putsCol(uint8_t *str, colorCode background, colorCode foreground);;
 /* Initialize the screen*/
 extern void vga_init();
 

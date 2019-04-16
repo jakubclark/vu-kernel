@@ -2,15 +2,15 @@
 #include "mem.h"
 #include "types.h"
 
-#define COLOURS 0x0F
 #define COLS 80
 #define ROWS 25
 #define VGA_START 0xB8000
 #define PRINTABLE(c) (c >= ' ')
 
-uint16_t *Scrn;                            // screen area
-int Curx, Cury = 0;                        // current cursor coordinates
-uint16_t EmptySpace = COLOURS << 8 | 0x20; /* 0x20 is ascii value of space */
+uint16_t *Scrn;                             // screen area
+int Curx, Cury = 0;                         // current cursor coordinates
+uint16_t EmptySpace = 0x0F << 8 | 0x20;     /* 0x20 is ascii value of space */
+colorCode defaultColor = 0x0F;
 
 /* These define our textpointer, our background and foreground
  *  colors (attributes), and x and y cursor coordinates */
@@ -33,6 +33,10 @@ void scroll(void) {
 
 // Print a character on the screen
 void putchar(uint8_t c) {
+  putcharCol(c, defaultColor);
+}
+
+void putcharCol(uint8_t c, colorCode color){
   uint16_t *addr;
 
   // first handle a few special characters
@@ -54,7 +58,7 @@ void putchar(uint8_t c) {
   // finally, if a normal character, print it
   else if (PRINTABLE(c)) {
     addr = Scrn + (Cury * COLS + Curx);
-    *addr = (COLOURS << 8) | c;
+    *addr = (color << 8) | c;
     Curx++;
   }
 
@@ -72,6 +76,14 @@ void putchar(uint8_t c) {
 void puts(unsigned char *str) {
   while (*str) {
     putchar(*str);
+    str++;
+  }
+}
+
+void putsCol(unsigned char *str, colorCode background, colorCode foreground){
+  colorCode color = background << 4 | foreground;
+  while(*str){
+    putcharCol(*str, color);
     str++;
   }
 }
