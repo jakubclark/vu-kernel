@@ -18,6 +18,9 @@ extern void puts(uint8_t *str);
 /* Print the `str` with `foreground` and `background` */
 extern void putsCol(uint8_t *str, uint16_t foreground, uint16_t background);
 
+/* Backspace */
+extern void backspace();
+
 /* Initialize the screen*/
 extern void vga_init();
 

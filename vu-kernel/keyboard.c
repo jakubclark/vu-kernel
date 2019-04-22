@@ -26,6 +26,11 @@ void keyboard_handler_main(void) {
       puts((uint8_t *)"\n");
       return;
     }
+
+    if (keycode == BACKSPACE_KEY_CODE){
+      backspace();
+      return;
+    }
     putchar(keyboard_map[(unsigned char)keycode]);
   }
 }

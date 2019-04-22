@@ -87,6 +87,22 @@ void putsCol(unsigned char *str, uint16_t foreground, uint16_t background){
   }
 }
 
+void backspace(){
+  if(Curx == 0){
+    Curx = COLS-1;
+    Cury--;
+  }else{
+    Curx--;
+  }
+  putchar(EmptySpace);
+  if(Curx == 0){
+    Curx = COLS-1;
+    Cury--;
+  }else{
+    Curx--;
+  }
+}
+
 void itoa(char *buf, int base, int d) {
   char *p = buf;
   char *p1, *p2;
