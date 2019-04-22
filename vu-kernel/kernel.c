@@ -1,3 +1,4 @@
+#include "chell.h"
 #include "colors.h"
 #include "init.h"
 #include "multiboot.h"
@@ -6,7 +7,16 @@
 
 #define CHECK_FLAG(flags, bit) ((flags) & (1 << (bit)))
 
-void print_multiboot_info(multiboot_info_t *mbi) {
+/* Holds the most recently pressed key */
+uint8_t keyboard_char = NULL;
+
+void print_multiboot_info(uint32_t magic, multiboot_info_t *mbi) {
+  if (magic == MULTIBOOT_BOOTLOADER_MAGIC) {
+    printf("Multiboot magic number is correct: %x\n", magic);
+  } else {
+    printf("Multiboot magic number is incorrect: %x\n", magic, mbi);
+  }
+
   printf("flags: `0x%x`\n", mbi->flags);
 
   if (CHECK_FLAG(mbi->flags, 0)) {
@@ -64,26 +74,17 @@ void print_multiboot_info(multiboot_info_t *mbi) {
     for (mmap = (multiboot_memory_map_t *)mbi->mmap_addr;
          (unsigned long)mmap < mbi->mmap_addr + mbi->mmap_length;
          mmap = (multiboot_memory_map_t *)((unsigned long)mmap + mmap->size +
-                                 sizeof(mmap->size)))
+                                           sizeof(mmap->size)))
 
       printf(" size = 0x%x, addr = 0x%x,"
              " len  = 0x%x, type = 0x%x\n",
-             (unsigned int)mmap->size,(unsigned int)mmap->type),
-             (unsigned int)mmap->len, (unsigned int)mmap->type;;
+             (unsigned int)mmap->size, (unsigned int)mmap->type),
+          (unsigned int)mmap->len, (unsigned int)mmap->type;
+    ;
   }
 }
 
-void Kernel_Main(uint32_t magic, multiboot_info_t *mbi) {
-  init();
-
-  if (magic == MULTIBOOT_BOOTLOADER_MAGIC) {
-    printf("Multiboot magic number is correct: %x\n", magic);
-  } else {
-    printf("Multiboot magic number is incorrect: %x\n", magic);
-  }
-
-  print_multiboot_info(mbi);
-
+void print_colored_text() {
   puts((uint8_t *)"Hello world!\nThis is the second line!\tTab\n");
   puts((uint8_t *)"Very Long Chain of Chars\rCarriage return\n");
 
@@ -98,6 +99,16 @@ void Kernel_Main(uint32_t magic, multiboot_info_t *mbi) {
 
   printf("Formatted string: str_arg: `%s`, int_arg: `%d`, int_arg: `%d`",
          "ArgumentA", 59, -12);
+}
 
-  while (1);
+void Kernel_Main(uint32_t magic, multiboot_info_t *mbi) {
+  init();
+
+  print_multiboot_info(magic, mbi);
+  // print_colored_text();
+
+  chell();
+
+  while (1)
+    ;
 }

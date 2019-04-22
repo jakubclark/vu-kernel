@@ -1,7 +1,10 @@
 #include "keyboard.h"
 #include "basicio.h"
+#include "chell.h"
 #include "scrn.h"
 #include "types.h"
+
+extern uint8_t keyboard_char;
 
 void kb_init(void) {
   /* 0xFD is 11111101 - enables only IRQ1 (keyboard)*/
@@ -9,8 +12,8 @@ void kb_init(void) {
 }
 
 void keyboard_handler_main(void) {
-  unsigned char status;
-  char keycode;
+  uint8_t status;
+  int8_t keycode;
 
   /* write EOI */
   outbyte(0x20, 0x20);
@@ -23,11 +26,28 @@ void keyboard_handler_main(void) {
       return;
 
     if (keycode == ENTER_KEY_CODE) {
-      puts((uint8_t *)"\n");
-    } else if (keycode == BACKSPACE_KEY_CODE) {
-      backspace();
-    } else {
-      putchar(keyboard_map[(unsigned char)keycode]);
+      println("");
+      print_prompt();
+      keyboard_char = '\r';
+      return;
     }
+
+    if (keycode == BACKSPACE_KEY_CODE) {
+      backspace();
+      keyboard_char = '\b';
+      return;
+    }
+
+    keyboard_char = keyboard_map[(unsigned char)keycode];
+    putchar(keyboard_char);
+
   }
+}
+
+
+uint8_t get_char(void) {
+  while (keyboard_char == NULL) {
+    continue;
+  }
+  return keyboard_char;
 }

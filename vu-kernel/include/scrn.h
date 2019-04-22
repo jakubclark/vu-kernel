@@ -6,17 +6,17 @@
 /* Clear the screen */
 extern void clear();
 
-/* Print the `c` to the screen */
+/* Print `c` to the screen */
 extern void putchar(uint8_t c);
 
-/* Print the `c` to the screen with `background` and `foreground` */
+/* Print `c` to the screen with `color` as the background/foreground */
 extern void putcharCol(uint8_t c, uint16_t color);
 
-/* Print the `str` to the screen */
+/* Print `str` to the screen */
 extern void puts(uint8_t *str);
 
-/* Print the `str` with `foreground` and `background` */
-extern void putsCol(uint8_t *str, uint16_t foreground, uint16_t background);
+/* Print `str` with `foreground` and `background` colors*/
+extern void putsCol(uint8_t *str, uint8_t foreground, uint8_t background);
 
 /* Backspace */
 extern void backspace();
@@ -25,9 +25,15 @@ extern void backspace();
 extern void vga_init();
 
 /* print using `fmt` */
-void printf(const char *format, ...);
+extern void printf(const char *format, ...);
+
+/* Print `str` and append `\n` */
+extern void println(const char *str);
 
 /* convert an int `d` in base `base` to a string stored in `buf` */
-void itoa(char *buf, int base, int d);
+extern void itoa(char *buf, int base, int d);
+
+/* Set the default color of the terminal */
+extern void set_default_color(uint8_t fg, uint8_t bg);
 
 #endif

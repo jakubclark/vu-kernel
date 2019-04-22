@@ -1,17 +1,18 @@
+#include "scrn.h"
 #include "basicio.h"
+#include "chell.h"
+#include "keyboard.h"
 #include "mem.h"
 #include "types.h"
-#include "keyboard.h"
-#include "scrn.h"
 
 #define COLS 80
 #define ROWS 25
 #define VGA_START 0xB8000
 #define PRINTABLE(c) (c >= ' ')
 
-uint16_t *Scrn;                             // screen area
-int Curx, Cury = 0;                         // current cursor coordinates
-uint16_t EmptySpace = 0x0F << 8 | 0x20;     /* 0x20 is ascii value of space */
+uint16_t *Scrn;                         // screen area
+int Curx, Cury = 0;                     // current cursor coordinates
+uint16_t EmptySpace = 0x0F << 8 | 0x20; /* 0x20 is ascii value of space */
 uint16_t DefaultColor = 0x0F;
 
 /* These define our textpointer, our background and foreground
@@ -33,11 +34,9 @@ void scroll(void) {
   }
 }
 
-void putchar(uint8_t c){
-  putcharCol(c, DefaultColor);
-}
+void putchar(uint8_t c) { putcharCol(c, DefaultColor); }
 
-void putcharCol(uint8_t c, uint16_t color){
+void putcharCol(uint8_t c, uint16_t color) {
   uint16_t *addr;
 
   // first handle a few special characters
@@ -74,33 +73,25 @@ void putcharCol(uint8_t c, uint16_t color){
 
 void puts(unsigned char *str) {
   while (*str) {
-    putcharCol(*str, DefaultColor);
+    putchar(*str);
     str++;
   }
 }
 
-void putsCol(unsigned char *str, uint16_t foreground, uint16_t background){
+void putsCol(unsigned char *str, uint8_t foreground, uint8_t background) {
   uint16_t color = background << 4 | foreground;
-  while(*str){
+  while (*str) {
     putcharCol(*str, color);
     str++;
   }
 }
 
-void backspace(){
-  if(Curx == 0){
-    Curx = COLS-1;
-    Cury--;
-  }else{
+void backspace() {
+  if (Curx > PROMPT_SIZE)
     Curx--;
-  }
   putchar(EmptySpace);
-  if(Curx == 0){
-    Curx = COLS-1;
-    Cury--;
-  }else{
+  if (Curx > PROMPT_SIZE)
     Curx--;
-  }
 }
 
 void itoa(char *buf, int base, int d) {
@@ -180,6 +171,14 @@ void printf(const char *format, ...) {
   }
 }
 
+void println(const char *str) {
+  while (*str) {
+    putchar(*str);
+    str++;
+  }
+  putchar('\n');
+}
+
 void clear() {
   int i;
   for (i = 0; i < ROWS * COLS; i++)
@@ -192,3 +191,5 @@ void vga_init(void) {
   Scrn = (unsigned short *)VGA_START;
   clear();
 }
+
+void set_default_color(uint8_t fg, uint8_t bg) { DefaultColor = bg << 4 | fg; }
