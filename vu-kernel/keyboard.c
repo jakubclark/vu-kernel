@@ -1,7 +1,7 @@
 #include "keyboard.h"
-#include "types.h"
 #include "basicio.h"
 #include "scrn.h"
+#include "types.h"
 
 void kb_init(void) {
   /* 0xFD is 11111101 - enables only IRQ1 (keyboard)*/
@@ -23,10 +23,9 @@ void keyboard_handler_main(void) {
       return;
 
     if (keycode == ENTER_KEY_CODE) {
-      puts((uint8_t *) "\n");
+      puts((uint8_t *)"\n");
       return;
     }
-
-    puts((uint8_t *) &keyboard_map[(unsigned char)keycode]);
+    putchar(keyboard_map[(unsigned char)keycode]);
   }
 }

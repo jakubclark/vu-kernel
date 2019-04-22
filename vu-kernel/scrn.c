@@ -33,6 +33,10 @@ void scroll(void) {
   }
 }
 
+void putchar(uint8_t c){
+  putcharCol(c, DefaultColor);
+}
+
 void putcharCol(uint8_t c, uint16_t color){
   uint16_t *addr;
 

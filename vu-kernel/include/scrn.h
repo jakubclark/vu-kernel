@@ -6,8 +6,11 @@
 /* Clear the screen */
 extern void clear();
 
+/* Print the `c` to the screen */
+extern void putchar(uint8_t c);
+
 /* Print the `c` to the screen with `background` and `foreground` */
-extern void putcharCol(uint8_t str, uint16_t color);
+extern void putcharCol(uint8_t c, uint16_t color);
 
 /* Print the `str` to the screen */
 extern void puts(uint8_t *str);
