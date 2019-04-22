@@ -24,13 +24,10 @@ void keyboard_handler_main(void) {
 
     if (keycode == ENTER_KEY_CODE) {
       puts((uint8_t *)"\n");
-      return;
-    }
-
-    if (keycode == BACKSPACE_KEY_CODE){
+    } else if (keycode == BACKSPACE_KEY_CODE) {
       backspace();
-      return;
+    } else {
+      putchar(keyboard_map[(unsigned char)keycode]);
     }
-    putchar(keyboard_map[(unsigned char)keycode]);
   }
 }

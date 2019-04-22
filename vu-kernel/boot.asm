@@ -40,6 +40,8 @@ keyboard_handler:
 
 start:
 	mov esp, stack_space
+	push ebx
+	push eax
 	call Kernel_Main
 	cli
 loop:
