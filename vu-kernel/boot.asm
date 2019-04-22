@@ -8,9 +8,15 @@ section .text
 global start
 global keyboard_handler
 global load_idt
+global load_gdt
 
 extern Kernel_Main
 extern keyboard_handler_main
+
+load_gdt:
+	mov edx, [esp + 4]
+	lgdt [edx]
+	ret
 
 load_idt:
 	mov edx, [esp + 4]
@@ -18,15 +24,27 @@ load_idt:
 	sti
 	ret
 
-keyboard_handler:                 
+keyboard_handler:  
+	push ds
+	push es
+	push fs
+	push gs
+	pushad
 	call keyboard_handler_main
+	popad
+	pop gs
+	pop fs
+	pop es
+	pop ds
 	iretd
 
 start:
-	cli
 	mov esp, stack_space
 	call Kernel_Main
+	cli
+loop:
 	hlt
+	jmp loop
 
 section .bss
 resb 8192; 8KB for stack
