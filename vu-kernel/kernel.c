@@ -4,9 +4,10 @@
 #include "scrn.h"
 #include "types.h"
 #include "colors.h"
+#include "init.h"
 
 void Kernel_Main(void) {
-  vga_init();
+  init();
   puts((uint8_t *)"Hello world!\nThis is the second line!\tTab\n");
   puts((uint8_t *) "Very Long Chain of Chars\rCarriage return\n");
 
@@ -19,7 +20,7 @@ void Kernel_Main(void) {
   putsCol((uint8_t *) "Light red on pink\n", LIGHTRED, PINK);
   putsCol((uint8_t *) "Yellow on white\n", YELLOW, WHITE);
 
-  printf("Formatted string: str_arg: `%s`, int_arg: `%d`, int_arg: `%d`", *"ArgumentA", 59, -12);
+  printf("Formatted string: str_arg: `%s`, int_arg: `%d`, int_arg: `%d`", "ArgumentA", 59, -12);
 
   while (1);
 }

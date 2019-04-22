@@ -1,6 +1,8 @@
 #include "basicio.h"
 #include "mem.h"
 #include "types.h"
+#include "keyboard.h"
+#include "scrn.h"
 
 #define COLS 80
 #define ROWS 25

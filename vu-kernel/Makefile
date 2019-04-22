@@ -1,22 +1,22 @@
-CC=gcc
+CC=gcc-7
 SHARED_FLAGS = -fno-builtin -O2 -nostdinc -nostdlib -ffreestanding -g -Wall -Wextra \
-               -Werror -Iinclude -MMD -mno-red-zone -mcmodel=kernel -fno-pie
+               -Werror -Iinclude -MMD -mno-red-zone -fno-pie -m32
 CFLAGS = $(SHARED_FLAGS)
 ASFLAGS = $(SHARED_FLAGS) -Wa,--divide
 
-OBJS := boot.o kernel.o scrn.o mem.o basicio.o
-
+OBJS := basicio.o idt.o init.o kernel.o keyboard.o mem.o scrn.o
 
 DFILES = $(patsubst %.o,%.d,$(OBJS))
 
 all: kernel
 
-kernel: $(OBJS) kernel.ld Makefile
-	$(CC) -z max-page-size=0x1000 $(CFLAGS) -no-pie -Wl,--build-id=none -T kernel.ld -o $@ $(OBJS)
+kernel: $(OBJS)
+	nasm -f elf32 -o boot.o boot.asm
+	ld -m elf_i386 -T kernel.ld -z muldefs -o kernel $(OBJS) boot.o
 
 clean:
 	find -name "*~" -delete
-	rm -rf $(OBJS) $(DFILES) kernel
+	rm -rf $(OBJS) $(DFILES) kernel boot.o
 
 $(OBJS): Makefile
 -include $(DFILES)
