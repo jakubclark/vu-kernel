@@ -1,5 +1,5 @@
-#ifndef GDT_H_
-#define GDT_H_
+#ifndef __GDT_H
+#define __GDT_H
 
 #include "types.h"
 #define GDT_SIZE 3
@@ -24,29 +24,29 @@ enum { _GDT_NULL, _KERNEL_CS, _KERNEL_DS };
 struct gdt_entry {
   /* Low 8 bits of the "limit", or length of memory this descriptor refers to.
    */
-  unsigned short limit_low;
-  unsigned short base_low;   /* 'Low' 16-bits of the base */
-  unsigned char base_middle; /* 'middle' 8 bits of the base */
+  uint16_t limit_low;
+  uint16_t base_low;   /* 'Low' 16-bits of the base */
+  uint8_t base_middle; /* 'middle' 8 bits of the base */
 
-  unsigned char
+  uint8_t
       type : 4; /* Flags for type of memory this descriptor describes */
-  unsigned char one : 1;
-  unsigned char dpl : 2;     /* Descriptor privilege level - Ring level */
-  unsigned char present : 1; /* 1 for any valid GDT entry */
+  uint8_t one : 1;
+  uint8_t dpl : 2;     /* Descriptor privilege level - Ring level */
+  uint8_t present : 1; /* 1 for any valid GDT entry */
 
-  unsigned char limit : 4; /* Top 4 bytes of 'limit' */
-  unsigned char avilable : 1;
-  unsigned char zero : 1;
-  unsigned char op_size : 1; /* Selects between 16-bit and 32-bit */
-  unsigned char gran : 1; /* If this bit is set, then 'limit' is a count of 4K
+  uint8_t limit : 4; /* Top 4 bytes of 'limit' */
+  uint8_t avilable : 1;
+  uint8_t zero : 1;
+  uint8_t op_size : 1; /* Selects between 16-bit and 32-bit */
+  uint8_t gran : 1; /* If this bit is set, then 'limit' is a count of 4K
                              blocks, not bytes */
 
-  unsigned char base_high; /* High 8 bits of the base */
+  uint8_t base_high; /* High 8 bits of the base */
 } __attribute__((packed));
 
 struct gdt_ptr {
-  unsigned short limit;
-  unsigned long base;
+  uint16_t limit;
+  uint32_t base;
 } __attribute__((packed));
 
 #define GDT_ENTRY(gdt_type, gdt_base, gdt_limit, gdt_dpl)                      \

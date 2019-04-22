@@ -1,3 +1,6 @@
+#ifndef _IDT_H
+#define _IDT_H
+
 #include "types.h"
 
 #define IDT_SIZE 256
@@ -5,19 +8,22 @@
 #define KERNEL_CODE_SEGMENT_OFFSET 0x08
 
 struct idt_entry {
-  unsigned short int offset_lowerbits;
-  unsigned short int selector;
-  unsigned char zero;
-  unsigned char type_attr;
-  unsigned short int offset_higherbits;
+  uint16_t offset_lowerbits;
+  uint16_t selector;
+  uint8_t zero;
+  uint8_t type_attr;
+  uint16_t offset_higherbits;
 };
 
 struct idt_ptr {
-	unsigned short limit;
-	unsigned long base;
+	uint16_t limit;
+	uint32_t base;
 } __attribute__((packed));
 
-/* Defined in boot.S */
-extern void keyboard_handler(void);
+/* Initialize the Interrupt Descriptor Table */
+extern void idt_init();
+
 /* Defined in boot.S */
 extern void load_idt(struct idt_ptr *idt_ptr);
+
+#endif

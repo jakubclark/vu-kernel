@@ -1,13 +1,14 @@
-/* The following array is taken from
-    http://www.osdever.net/bkerndev/Docs/keyboard.htm
-   All credits where due
-*/
+#ifndef __KEYBOARD_H
+#define __KEYBOARD_H
 
 #define KEYBOARD_DATA_PORT 0x60
 #define KEYBOARD_STATUS_PORT 0x64
 #define ENTER_KEY_CODE 0x1C
 #define BACKSPACE_KEY_CODE 0xE
 
+/* The keyboard map is from:
+ * http://www.osdever.net/bkerndev/Docs/keyboard.htm
+*/
 unsigned char keyboard_map[128] = {
     0,    27,  '1', '2', '3',  '4', '5', '6', '7',  '8', /* 9 */
     '9',  '0', '-', '=', '\b',                           /* Backspace */
@@ -41,8 +42,10 @@ unsigned char keyboard_map[128] = {
     0, /* All other keys are undefined */
 };
 
-/* Initialize the Interrupt Descriptor Table */
-extern void idt_init();
-
 /* Initialize the keyboard driver */
 extern void kb_init();
+
+/* Defined in boot.S */
+extern void keyboard_handler(void);
+
+#endif

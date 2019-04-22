@@ -1,6 +1,7 @@
 #include "idt.h"
 #include "basicio.h"
 #include "types.h"
+#include "keyboard.h"
 
 struct idt_entry IDT[IDT_SIZE];
 
@@ -8,7 +9,7 @@ void idt_init(void) {
   struct idt_ptr idt_ptr;
 
   /* populate IDT entry of keyboard's interrupt */
-  uint32_t keyboard_address = (unsigned long)keyboard_handler;
+  uint32_t keyboard_address = (uint32_t)keyboard_handler;
   IDT[0x21].offset_lowerbits = keyboard_address & 0xffff;
   IDT[0x21].selector = KERNEL_CODE_SEGMENT_OFFSET;
   IDT[0x21].zero = 0;

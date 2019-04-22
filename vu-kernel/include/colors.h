@@ -1,3 +1,6 @@
+#ifndef __COLORS_H
+#define __COLORS_H
+
 #define BLACK 0
 #define BLUE 1
 #define GREEN 2
@@ -14,3 +17,5 @@
 #define PINK 13
 #define YELLOW 14
 #define WHITE 15
+
+#endif
