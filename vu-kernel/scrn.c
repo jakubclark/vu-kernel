@@ -31,29 +31,25 @@ void scroll(void) {
 void putchar(uint8_t c) { putcharCol(c, DefaultColor); }
 
 void putcharCol(uint8_t c, uint16_t color) {
-  uint16_t *addr;
-
-  // first handle a few special characters
-
-  // tab -> move cursor in steps of 4
-  if (c == '\t')
-    Curx = ((Curx + 4) / 4) * 4;
-  // carriage return -> reset x pos
-  else if (c == '\r')
-    Curx = 0;
-  // newline: reset x pos and go to newline
-  else if (c == '\n') {
-    Curx = 0;
-    Cury++;
-  }
-  // backspace -> cursor moves left
-  else if (c == 0x08 && Curx != 0)
-    Curx--;
-  // finally, if a normal character, print it
-  else if (PRINTABLE(c)) {
-    addr = Scrn + (Cury * COLS + Curx);
-    *addr = (color << 8) | c;
-    Curx++;
+  switch (c) {
+    case '\t':
+      Curx = ((Curx + 4) / 4) * 4;
+      break;
+    case '\r':
+      Curx = 0;
+      break;
+    case '\n':
+      Curx = 0;
+      Cury++;
+      break;
+    case 0x08:
+      if (Curx > 0) Curx--;
+      break;
+    default:
+      if (PRINTABLE(c)) {
+        Scrn[Cury * COLS + Curx] = (color << 8) | c;
+        Curx++;
+      }
   }
 
   // if we have reached the end of the line, move to the next
@@ -81,11 +77,9 @@ void putsCol(unsigned char *str, uint8_t foreground, uint8_t background) {
 }
 
 void backspace() {
-  if (Curx > PROMPT_SIZE)
-    Curx--;
+  if (Curx > PROMPT_SIZE) Curx--;
   putchar(EmptySpace);
-  if (Curx > PROMPT_SIZE)
-    Curx--;
+  if (Curx > PROMPT_SIZE) Curx--;
 }
 
 void itoa(char *buf, int base, int d) {
@@ -139,27 +133,25 @@ void printf(const char *format, ...) {
 
       c = *format++;
       switch (c) {
-      case 'd':
-      case 'u':
-      case 'x':
-        itoa(buf, c, *((int *)arg++));
-        p = buf;
-        goto string;
-        break;
+        case 'd':
+        case 'u':
+        case 'x':
+          itoa(buf, c, *((int *)arg++));
+          p = buf;
+          goto string;
+          break;
 
-      case 's':
-        p = *arg++;
-        if (p == NULL)
-          p = "(null)";
+        case 's':
+          p = *arg++;
+          if (p == NULL) p = "(null)";
 
-      string:
-        while (*p)
-          putcharCol(*p++, DefaultColor);
-        break;
+        string:
+          while (*p) putcharCol(*p++, DefaultColor);
+          break;
 
-      default:
-        putcharCol(*((int *)arg++), DefaultColor);
-        break;
+        default:
+          putcharCol(*((int *)arg++), DefaultColor);
+          break;
       }
     }
   }
@@ -175,8 +167,7 @@ void println(const char *str) {
 
 void clear() {
   int i;
-  for (i = 0; i < ROWS * COLS; i++)
-    putcharCol(' ', DefaultColor);
+  for (i = 0; i < ROWS * COLS; i++) putcharCol(' ', DefaultColor);
   Curx = Cury = 0;
   Scrn[i] = EmptySpace;
 }
