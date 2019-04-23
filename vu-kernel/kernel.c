@@ -4,6 +4,9 @@
 #include "multiboot.h"
 #include "scrn.h"
 #include "types.h"
+#include "keyboard.h"
+#include "idt.h"
+#include "gdt.h"
 
 #define CHECK_FLAG(flags, bit) ((flags) & (1 << (bit)))
 
@@ -126,13 +129,20 @@ void print_colored_text() {
          "ArgumentA", 59, -12);
 }
 
+void init() {
+  vga_init();
+  gdt_init();
+  idt_init();
+  kb_init();
+}
+
 void Kernel_Main(uint32_t magic, multiboot_info_t *mbi) {
   init();
 
   print_multiboot_info(magic, mbi);
   // print_colored_text();
 
-  chell();
+  chell_main();
 
   while (1)
     ;

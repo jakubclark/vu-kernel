@@ -13,13 +13,9 @@
 /* Kernel code always runs in ring 0 */
 #define DPL_KERNEL 0
 
-/* GDT entry numbers */
-enum { _GDT_NULL, _KERNEL_CS, _KERNEL_DS };
-
-/* GDT entry offsets */
-#define GDT_NULL (_GDT_NULL << 3)
-#define KERNEL_CS (_KERNEL_CS << 3)
-#define KERNEL_DS (_KERNEL_DS << 3)
+#define GDT_NULL 0
+#define KERNEL_CS 1
+#define KERNEL_DS 2
 
 struct gdt_entry {
   /* Low 8 bits of the "limit", or length of memory this descriptor refers to.

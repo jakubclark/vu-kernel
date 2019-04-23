@@ -4,4 +4,4 @@
 extern void print_prompt();
 
 /* Run the chell shell */
-extern void chell();
+extern void chell_main();

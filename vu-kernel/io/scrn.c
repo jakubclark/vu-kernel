@@ -2,7 +2,7 @@
 #include "basicio.h"
 #include "chell.h"
 #include "keyboard.h"
-#include "mem.h"
+#include "memutil.h"
 #include "types.h"
 
 #define COLS 80

@@ -19,7 +19,7 @@ void print_welcome(){
     print_prompt();
 }
 
-void chell() {
+void chell_main() {
   uint8_t char_;
   println("Welcome to Chell, a barebones shell!");
   while (1) {

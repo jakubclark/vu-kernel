@@ -4,16 +4,31 @@ SHARED_FLAGS = -fno-builtin -O2 -nostdinc -nostdlib -ffreestanding -g -Wall -Wex
 CFLAGS = $(SHARED_FLAGS)
 ASFLAGS = $(SHARED_FLAGS) -Wa,--divide
 
-OBJS := basicio.o chell.o gdt.o idt.o init.o kernel.o keyboard.o mem.o scrn.o
+OBJS := kernel.o
+ALL_OBJS = $(OBJS) chell.o basicio.o gdt.o idt.o keyboard.o memutil.o scrn.o
 DFILES = $(patsubst %.o,%.d,$(OBJS))
 
 all: kernel
 
-kernel: $(OBJS) Makefile kernel.ld
+kernel: subdir $(OBJS) Makefile kernel.ld
 	nasm -f elf32 -o boot.o boot.asm
-	ld -m elf_i386 -T kernel.ld -z muldefs -o kernel $(OBJS) boot.o
+	ld -m elf_i386 -T kernel.ld -z muldefs -o kernel $(ALL_OBJS) boot.o
+
+subdir:
+	make -C chell
+	make -C dt
+	make -C io
+	make -C memory
+	cp chell/*.o .
+	cp dt/*.o .
+	cp io/*.o .
+	cp memory/*.o .
 
 clean:
+	make -C chell clean
+	make -C dt clean
+	make -C io clean
+	make -C memory clean
 	find -name "*~" -delete
 	rm -rf $(OBJS) $(DFILES) kernel boot.o
 

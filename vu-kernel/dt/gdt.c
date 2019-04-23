@@ -4,9 +4,9 @@
 struct gdt_entry gdt[3];
 
 struct gdt_entry GDT[GDT_SIZE] = {
-    [_GDT_NULL] = {0 /* NULL GDT entry - Required */},
-    [_KERNEL_CS] = GDT_ENTRY(GDT_EXE | GDT_READ, 0, 0xFFFFFFFF, DPL_KERNEL),
-    [_KERNEL_DS] = GDT_ENTRY(GDT_WRITE, 0, 0xFFFFFFFF, DPL_KERNEL)};
+    [GDT_NULL] = {0 /* NULL GDT entry - Required */},
+    [KERNEL_CS] = GDT_ENTRY(GDT_EXE | GDT_READ, 0, 0xFFFFFFFF, DPL_KERNEL),
+    [KERNEL_DS] = GDT_ENTRY(GDT_WRITE, 0, 0xFFFFFFFF, DPL_KERNEL)};
 
 void gdt_init(void) {
   struct gdt_ptr gdt_ptr;
