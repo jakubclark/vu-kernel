@@ -18,4 +18,7 @@
 #define YELLOW 14
 #define WHITE 15
 
+#define DEFAULTFOREGROUND 0
+#define DEFAULTBACKGROUND 7
+
 #endif

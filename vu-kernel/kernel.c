@@ -23,9 +23,9 @@ typedef struct multiboot_memory_map {
 
 void print_multiboot_info(uint32_t magic, multiboot_info_t *mbi) {
   if (magic == MULTIBOOT_BOOTLOADER_MAGIC) {
-    printf("Multiboot magic number is correct: %x\n", magic);
+    printf("Multiboot magic number is correct: 0x%x\n", magic);
   } else {
-    printf("Multiboot magic number is incorrect: %x\n", magic, mbi);
+    printf("Multiboot magic number is incorrect: 0x%x\n", magic);
   }
 
   printf("flags: 0x%x\n", mbi->flags);

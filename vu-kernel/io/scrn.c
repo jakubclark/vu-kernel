@@ -1,6 +1,7 @@
 #include "scrn.h"
 #include "basicio.h"
 #include "chell.h"
+#include "colors.h"
 #include "keyboard.h"
 #include "memutil.h"
 #include "types.h"
@@ -10,10 +11,14 @@
 #define VGA_START 0xB8000
 #define PRINTABLE(c) (c >= ' ')
 
-uint16_t *Scrn;                         // screen area
-int Curx, Cury = 0;                     // current cursor coordinates
-uint16_t EmptySpace = 0x0F << 8 | 0x20; /* 0x20 is ascii value of space */
-uint16_t DefaultColor = 0x0F;
+/* The VGA Screen buffer */
+uint16_t *Scrn;
+/* The current x and y position, on the screen */
+int Curx, Cury = 0;
+/* A literal space ' '*/
+uint8_t EmptySpace = 0x20;
+/* The default color, when printing */
+uint8_t DefaultColor = DEFAULTBACKGROUND << 4 | DEFAULTFOREGROUND;
 
 void scroll(void) {
   int dist = Cury - ROWS + 1;
@@ -69,7 +74,7 @@ void puts(unsigned char *str) {
 }
 
 void puts_col(unsigned char *str, uint8_t foreground, uint8_t background) {
-  uint16_t color = background << 4 | foreground;
+  uint8_t color = background << 4 | foreground;
   while (*str) {
     putcharCol(*str, color);
     str++;
