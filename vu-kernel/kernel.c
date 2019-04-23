@@ -1,6 +1,5 @@
 #include "chell.h"
 #include "colors.h"
-#include "init.h"
 #include "multiboot.h"
 #include "scrn.h"
 #include "types.h"
@@ -9,9 +8,6 @@
 #include "gdt.h"
 
 #define CHECK_FLAG(flags, bit) ((flags) & (1 << (bit)))
-
-/* Holds the most recently pressed key */
-uint8_t keyboard_char = NULL;
 
 extern uint32_t mem_start_address;
 extern uint32_t mem_end_address;
@@ -116,14 +112,14 @@ void print_colored_text() {
   puts((uint8_t *)"Hello world!\nThis is the second line!\tTab\n");
   puts((uint8_t *)"Very Long Chain of Chars\rCarriage return\n");
 
-  putsCol((uint8_t *)"Black on blue\n", BLACK, BLUE);
-  putsCol((uint8_t *)"Green on cyan\n", GREEN, CYAN);
-  putsCol((uint8_t *)"Red on magenta\n", RED, MAGENTA);
-  putsCol((uint8_t *)"Brown on light gray\n", BROWN, LIGHTGRAY);
-  putsCol((uint8_t *)"Dark gray on light blue\n", DARKGRAY, LIGHTBLUE);
-  putsCol((uint8_t *)"Light green on ligt cyan\n", LIGHTGREEN, LIGHTCYAN);
-  putsCol((uint8_t *)"Light red on pink\n", LIGHTRED, PINK);
-  putsCol((uint8_t *)"Yellow on white\n", YELLOW, WHITE);
+  puts_col((uint8_t *)"Black on blue\n", BLACK, BLUE);
+  puts_col((uint8_t *)"Green on cyan\n", GREEN, CYAN);
+  puts_col((uint8_t *)"Red on magenta\n", RED, MAGENTA);
+  puts_col((uint8_t *)"Brown on light gray\n", BROWN, LIGHTGRAY);
+  puts_col((uint8_t *)"Dark gray on light blue\n", DARKGRAY, LIGHTBLUE);
+  puts_col((uint8_t *)"Light green on ligt cyan\n", LIGHTGREEN, LIGHTCYAN);
+  puts_col((uint8_t *)"Light red on pink\n", LIGHTRED, PINK);
+  puts_col((uint8_t *)"Yellow on white\n", YELLOW, WHITE);
 
   printf("Formatted string: str_arg: `%s`, int_arg: `%d`, int_arg: `%d`",
          "ArgumentA", 59, -12);
@@ -136,7 +132,7 @@ void init() {
   kb_init();
 }
 
-void Kernel_Main(uint32_t magic, multiboot_info_t *mbi) {
+void kernel_main(uint32_t magic, multiboot_info_t *mbi) {
   init();
 
   print_multiboot_info(magic, mbi);

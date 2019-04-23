@@ -68,7 +68,7 @@ void puts(unsigned char *str) {
   }
 }
 
-void putsCol(unsigned char *str, uint8_t foreground, uint8_t background) {
+void puts_col(unsigned char *str, uint8_t foreground, uint8_t background) {
   uint16_t color = background << 4 | foreground;
   while (*str) {
     putcharCol(*str, color);

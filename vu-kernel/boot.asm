@@ -10,7 +10,7 @@ global keyboard_handler
 global load_idt
 global load_gdt
 
-extern Kernel_Main
+extern kernel_main
 extern keyboard_handler_main
 
 load_gdt:
@@ -25,24 +25,14 @@ load_idt:
 	ret
 
 keyboard_handler:  
-	push ds
-	push es
-	push fs
-	push gs
-	pushad
 	call keyboard_handler_main
-	popad
-	pop gs
-	pop fs
-	pop es
-	pop ds
 	iretd
 
 start:
 	mov esp, stack_space
 	push ebx
 	push eax
-	call Kernel_Main
+	call kernel_main
 	cli
 loop:
 	hlt

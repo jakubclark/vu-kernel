@@ -3,9 +3,6 @@
 
 #include "types.h"
 
-/* Clear the screen */
-extern void clear();
-
 /* Print `c` to the screen */
 extern void putchar(uint8_t c);
 
@@ -16,7 +13,7 @@ extern void putcharCol(uint8_t c, uint16_t color);
 extern void puts(uint8_t *str);
 
 /* Print `str` with `foreground` and `background` colors*/
-extern void putsCol(uint8_t *str, uint8_t foreground, uint8_t background);
+extern void puts_col(uint8_t *str, uint8_t foreground, uint8_t background);
 
 /* Backspace */
 extern void backspace();

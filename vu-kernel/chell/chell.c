@@ -9,7 +9,7 @@ void print_prompt(){
     set_default_color(GREEN, BLACK);
     printf("@");
     set_default_color(RED, BLACK);
-    printf("cs> ");
+    printf("vu> ");
     set_default_color(WHITE, BLACK);
 }
 
@@ -24,7 +24,9 @@ void chell_main() {
   println("Welcome to Chell, a barebones shell!");
   while (1) {
     print_welcome();
+    println("Awaiting for a keypress");
     char_ = get_char();
+    println("Received a keypress");
     putchar(char_);
   }
 }

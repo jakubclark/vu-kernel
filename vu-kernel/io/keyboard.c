@@ -4,7 +4,8 @@
 #include "scrn.h"
 #include "types.h"
 
-extern uint8_t keyboard_char;
+/* Holds the most recently pressed key */
+uint8_t keyboard_char = NULL;
 
 void kb_init(void) {
   /* 0xFD is 11111101 - enables only IRQ1 (keyboard)*/
@@ -27,7 +28,6 @@ void keyboard_handler_main(void) {
 
     if (keycode == ENTER_KEY_CODE) {
       println("");
-      print_prompt();
       keyboard_char = '\r';
       return;
     }
