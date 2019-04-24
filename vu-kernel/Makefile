@@ -5,7 +5,7 @@ CFLAGS = $(SHARED_FLAGS)
 ASFLAGS = $(SHARED_FLAGS) -Wa,--divide
 
 OBJS := kernel.o
-ALL_OBJS = $(OBJS) chell.o basicio.o gdt.o idt.o keyboard.o memutil.o scrn.o
+ALL_OBJS = $(OBJS) chell.o basicio.o gdt.o idt.o keyboard.o memutil.o scrn.o string.o
 DFILES = $(patsubst %.o,%.d,$(OBJS))
 
 all: kernel
@@ -19,16 +19,19 @@ subdir:
 	make -C dt
 	make -C io
 	make -C memory
+	make -C std
 	cp chell/*.o .
 	cp dt/*.o .
 	cp io/*.o .
 	cp memory/*.o .
+	cp std/*.o .
 
 clean:
 	make -C chell clean
 	make -C dt clean
 	make -C io clean
 	make -C memory clean
+	make -C std clean
 	find -name "*~" -delete
 	rm -rf $(OBJS) $(DFILES) kernel boot.o
 

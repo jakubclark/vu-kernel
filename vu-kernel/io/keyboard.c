@@ -8,9 +8,6 @@
 /* Holds the most recently pressed key */
 uint8_t keyboard_char = NULL;
 
-/* Whether we are in the shell */
-extern uint8_t IN_SHELL;
-
 void kb_init(void) {
   /* 0xFD is 11111101 - enables only IRQ1 (keyboard)*/
   outbyte(0x21, 0xFD);
@@ -29,9 +26,7 @@ void keyboard_handler_main(void) {
     keycode = inbyte(KEYBOARD_DATA_PORT);
 
     if (keycode == ENTER_KEY_CODE) {
-      println("");
-      keyboard_char = '\r';
-      if (IN_SHELL == 1) print_prompt();
+      keyboard_char = '\n';
       return;
     }
 
@@ -41,23 +36,17 @@ void keyboard_handler_main(void) {
       return;
     }
 
+    uint8_t pressed;
     /* Check if the key was released */
     if (keycode & 0x80) {
-      keyboard_char = NULL;
-      return;
+      pressed = 0;
+    } else {
+      pressed = 1;
     }
 
-    keyboard_char = keyboard_map[(unsigned char)keycode];
-    putchar(keyboard_char);
-  }
-}
-
-uint8_t get_char(void) {
-  int i;
-  while (keyboard_char == NULL) {
-    for (i = 0; i < 100; i++) {
-      continue;
+    if (pressed == 1) {
+      keyboard_char = keyboard_map[(unsigned char)keycode];
+      putchar(keyboard_char);
     }
   }
-  return keyboard_char;
 }

@@ -19,6 +19,8 @@ int Curx, Cury = 0;
 uint8_t EmptySpace = 0x20;
 /* The default color, when printing */
 uint8_t DefaultColor = DEFAULTBACKGROUND << 4 | DEFAULTFOREGROUND;
+uint16_t ColoredEmptyspace =
+    (DEFAULTBACKGROUND << 4 | DEFAULTFOREGROUND) << 8 | 0x20;
 
 void scroll(void) {
   int dist = Cury - ROWS + 1;
@@ -172,9 +174,8 @@ void println(const char *str) {
 
 void clear() {
   int i;
-  for (i = 0; i < ROWS * COLS; i++) putcharCol(' ', DefaultColor);
+  for (i = 0; i < ROWS * COLS; i++) Scrn[i] = ColoredEmptyspace;
   Curx = Cury = 0;
-  Scrn[i] = EmptySpace;
 }
 
 void vga_init(void) {

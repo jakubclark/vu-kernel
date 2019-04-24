@@ -1,11 +1,11 @@
 #include "chell.h"
 #include "colors.h"
+#include "gdt.h"
+#include "idt.h"
+#include "keyboard.h"
 #include "multiboot.h"
 #include "scrn.h"
 #include "types.h"
-#include "keyboard.h"
-#include "idt.h"
-#include "gdt.h"
 
 #define CHECK_FLAG(flags, bit) ((flags) & (1 << (bit)))
 
@@ -94,18 +94,18 @@ void print_multiboot_info(uint32_t magic, multiboot_info_t *mbi) {
       mem_type = mmap->type;
 
       if (mem_type == 1) {
-        printf("addr: 0x%x ", (uint32_t)mmap->base_addr);
+        printf(" addr: 0x%x,", (uint32_t)mmap->base_addr);
 
         if (mmap->length < 1024 * 1024)
-          printf("size: %d bytes ", (uint32_t)mmap->length);
+          printf(" size: %d bytes,", (uint32_t)mmap->length);
         else
-          printf("size: %dMB, ", (uint32_t)mmap->length / (1024 * 1024));
+          printf(" size: %dMB,", (uint32_t)mmap->length / (1024 * 1024));
 
-        printf("type: 0x%x, end: 0x%x\n", mmap->type, mem_end);
+        printf(" type: 0x%x, end: 0x%x\n", mmap->type, mem_end);
       }
     }
-    println("");
   }
+  printf("bootloader name: %s\n\n", mbi->boot_loader_name);
 }
 
 void print_colored_text() {

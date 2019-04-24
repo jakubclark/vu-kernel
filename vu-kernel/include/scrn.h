@@ -21,6 +21,9 @@ extern void backspace();
 /* Initialize the screen*/
 extern void vga_init();
 
+/* Clear the screen */
+extern void clear();
+
 /* print using `fmt` */
 extern void printf(const char *format, ...);
 
