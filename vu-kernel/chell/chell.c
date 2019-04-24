@@ -8,12 +8,14 @@ uint8_t IN_SHELL = 0;
 
 extern uint8_t keyboard_char;
 
+/* Prints "user@vu " */
 void print_prompt() {
   puts_col((uint8_t *)"user", LIGHTBLUE, DEFAULTBACKGROUND);
   puts_col((uint8_t *)"@", GREEN, DEFAULTBACKGROUND);
   puts_col((uint8_t *)"vu> ", RED, DEFAULTBACKGROUND);
 }
 
+/* Prints a welcome screen, to chell! */
 void print_welcome() {
   println("Welcome to Chell, a barebones shell!");
   println("help: list available commands");
@@ -32,8 +34,6 @@ void chell_main() {
   print_welcome();
 
   while (1) {
-    // printf("awaiting for keypress\n");
-
   loop:
     printf("");
     if (keyboard_char == NULL) goto loop;
@@ -56,8 +56,10 @@ void chell_main() {
         goto cmd_end;
       }
     } else if (char_ == '\b') {
-      cmd_buffer_index--;
       cmd_buffer[cmd_buffer_index] = '\0';
+      if(cmd_buffer_index != 0){
+        cmd_buffer_index--;
+      }
       goto end;
     } else {
       if (cmd_buffer_index < 255) {
@@ -78,6 +80,7 @@ void chell_main() {
     goto end;
   end:
     keyboard_char = NULL;
+    goto loop;
   }
   IN_SHELL = 0;
 }

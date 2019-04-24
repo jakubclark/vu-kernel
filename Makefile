@@ -28,7 +28,7 @@ $(ISO_FILE): kernel
 	touch kernel.iso
 	$(GRUB_MKRESCUE) -o $(ISO_FILE) iso
 
-qemu: $(ISO_FILE)
+qemu: kernel
 	qemu-system-i386 -kernel vu-kernel/kernel -monitor stdio -m 32M
 
 clean:

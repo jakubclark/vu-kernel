@@ -5,8 +5,8 @@ CFLAGS = $(SHARED_FLAGS)
 ASFLAGS = $(SHARED_FLAGS) -Wa,--divide
 
 OBJS := kernel.o
-ALL_OBJS = $(OBJS) chell.o basicio.o gdt.o idt.o keyboard.o memutil.o scrn.o string.o
-DFILES = $(patsubst %.o,%.d,$(OBJS))
+ALL_OBJS = $(OBJS) chell.o basicio.o gdt.o idt.o keyboard.o memutil.o scrn.o string.o virtualmemory.o
+DFILES = $(patsubst %.o,%.d,$(ALL_OBJS))
 
 all: kernel
 
@@ -33,7 +33,7 @@ clean:
 	make -C memory clean
 	make -C std clean
 	find -name "*~" -delete
-	rm -rf $(OBJS) $(DFILES) kernel boot.o
+	rm -rf $(ALL_OBJS) $(DFILES) kernel boot.o
 
 $(OBJS): Makefile
 -include $(DFILES)
