@@ -32,7 +32,23 @@ void print_multiboot_info() {
   }
 
   if (CHECK_FLAG(mbi->flags, 2)) {
-    printf("cmdline: 0x%x\n", mbi->cmdline);
+    char *mode_type;
+    switch (mbi->vbe_mode) {
+      case 0:
+        mode_type = "linear graphics";
+        break;
+      case 1:
+        mode_type = "EGA-standard text";
+        break;
+
+      default:
+        mode_type = "unknown graphics mode";
+        break;
+    }
+    printf("vide_mode_type: %s, cmdline: 0x%x\n", mode_type, mbi->cmdline);
+    printf("width: 0x%x, height: 0x%x, depth: 0x%x\n", mbi->framebuffer_width,
+           mbi->framebuffer_height, mbi->framebuffer_height);
+    ;
   }
 
   if (CHECK_FLAG(mbi->flags, 3)) {

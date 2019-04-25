@@ -2,6 +2,7 @@
 #include "types.h"
 
 struct gdt_entry gdt[3];
+struct gdt_ptr gdtptr;
 
 struct gdt_entry GDT[GDT_SIZE] = {
     [GDT_NULL] = {0 /* NULL GDT entry - Required */},
@@ -9,9 +10,7 @@ struct gdt_entry GDT[GDT_SIZE] = {
     [KERNEL_DS] = GDT_ENTRY(GDT_WRITE, 0, 0xFFFFFFFF, DPL_KERNEL)};
 
 void gdt_init(void) {
-  struct gdt_ptr gdt_ptr;
-
-  gdt_ptr.base = (unsigned long)GDT;
-  gdt_ptr.limit = sizeof(GDT);
-  load_gdt(&gdt_ptr);
+  gdtptr.base = (unsigned long)GDT;
+  gdtptr.limit = sizeof(GDT);
+  load_gdt();
 }

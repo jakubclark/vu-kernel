@@ -56,7 +56,7 @@ struct gdt_ptr {
   }
 
 /* defined in boot.asm */
-extern void load_gdt(struct gdt_ptr *gdt_ptr);
+extern void load_gdt();
 
 /* defined in gdt.c */
 extern void gdt_init(void);

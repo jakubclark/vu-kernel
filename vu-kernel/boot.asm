@@ -12,11 +12,22 @@ global load_gdt
 
 extern kernel_main
 extern keyboard_handler_main
+extern gdtptr
 
 load_gdt:
-	mov edx, [esp + 4]
-	lgdt [edx]
-	ret
+    ; load the new GDT pointer
+    cli
+    lgdt [gdtptr]
+    jmp 0x08:full_load_gdt
+ 
+full_load_gdt:
+    mov ax, 0x10
+    mov ds, ax
+    mov es, ax
+    mov fs, ax
+    mov gs, ax
+    mov ss, ax
+    ret
 
 load_idt:
 	mov edx, [esp + 4]
@@ -24,20 +35,20 @@ load_idt:
 	sti
 	ret
 
-keyboard_handler:  
-	call keyboard_handler_main
-	iretd
+keyboard_handler:
+    call keyboard_handler_main
+    iretd
 
 start:
-	mov esp, stack_space
-	push ebx
-	push eax
-	call kernel_main
-	cli
+    mov esp, stack_space
+    push ebx
+    push eax
+    call kernel_main
+    cli
 loop:
-	hlt
-	jmp loop
+    hlt
+    jmp loop
 
 section .bss
-resb 8192; 8KB for stack
+resb 8192 ; 8KB for stack
 stack_space:
