@@ -258,6 +258,13 @@ struct multiboot_apm_info {
   multiboot_uint16_t dseg_len;
 };
 
+typedef struct multiboot_memory_map {
+  multiboot_uint32_t size;
+  multiboot_uint64_t base_addr;
+  multiboot_uint64_t length;
+  multiboot_uint32_t type;
+} multiboot_memory_map_t;
+
 #endif /* ! ASM_FILE */
 
 #endif /* ! MULTIBOOT_HEADER */

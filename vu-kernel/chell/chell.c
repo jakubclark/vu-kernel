@@ -1,5 +1,6 @@
 #include "colors.h"
 #include "keyboard.h"
+#include "multiboot_cmd.h"
 #include "scrn.h"
 #include "string.h"
 #include "types.h"
@@ -7,6 +8,7 @@
 uint8_t IN_SHELL = 0;
 
 extern uint8_t keyboard_char;
+extern uint32_t offset;
 
 /* Prints "user@vu " */
 void print_prompt() {
@@ -24,6 +26,7 @@ void print_welcome() {
 }
 
 void chell_main() {
+  uint32_t prev_offset;
   uint8_t char_;
 
   uint8_t cmd_buffer[256];
@@ -31,6 +34,9 @@ void chell_main() {
   cmd_buffer[cmd_buffer_index] = '\0';
 
   IN_SHELL = 1;
+  prev_offset = offset;
+  /* The len of "user@vu> "*/
+  offset = 9;
   print_welcome();
 
   while (1) {
@@ -43,21 +49,23 @@ void chell_main() {
       cmd_buffer[cmd_buffer_index] = '\0';
 
       if (strcmp(cmd_buffer, (uint8_t *)"help") == 0) {
-        printf("\nHELP COMMAND GOES HERE");
+        printf("HELP COMMAND GOES HERE");
         goto cmd_end;
       } else if (strcmp(cmd_buffer, (uint8_t *)"index") == 0) {
-        printf("\nINDEX: `%d`", cmd_buffer_index);
+        printf("INDEX: `%d`", cmd_buffer_index);
         goto cmd_end;
       } else if (strcmp(cmd_buffer, (uint8_t *)"clear") == 0) {
         clear();
         goto prompt;
+      } else if (strcmp(cmd_buffer, (uint8_t *)"multiboot") == 0) {
+        print_multiboot_info();
       } else {
-        printf("\nUNKOWN COMMAND: `%s`", cmd_buffer);
+        printf("UNKOWN COMMAND: `%s`", cmd_buffer);
         goto cmd_end;
       }
     } else if (char_ == '\b') {
       cmd_buffer[cmd_buffer_index] = '\0';
-      if(cmd_buffer_index != 0){
+      if (cmd_buffer_index != 0) {
         cmd_buffer_index--;
       }
       goto end;
@@ -83,4 +91,5 @@ void chell_main() {
     goto loop;
   }
   IN_SHELL = 0;
+  offset = prev_offset;
 }

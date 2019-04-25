@@ -11,12 +11,17 @@
 #define VGA_START 0xB8000
 #define PRINTABLE(c) (c >= ' ')
 
+uint32_t offset = 0;
+
 /* The VGA Screen buffer */
 uint16_t *Scrn;
+
 /* The current x and y position, on the screen */
-int Curx, Cury = 0;
+uint32_t Curx, Cury = 0;
+
 /* A literal space ' '*/
 uint8_t EmptySpace = 0x20;
+
 /* The default color, when printing */
 uint8_t DefaultColor = DEFAULTBACKGROUND << 4 | DEFAULTFOREGROUND;
 uint16_t ColoredEmptyspace =
@@ -84,9 +89,9 @@ void puts_col(unsigned char *str, uint8_t foreground, uint8_t background) {
 }
 
 void backspace() {
-  if (Curx > PROMPT_SIZE) Curx--;
+  if (Curx > offset) Curx--;
   putchar(EmptySpace);
-  if (Curx > PROMPT_SIZE) Curx--;
+  if (Curx > offset) Curx--;
 }
 
 void itoa(char *buf, int base, int d) {

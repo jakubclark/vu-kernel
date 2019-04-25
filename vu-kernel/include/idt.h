@@ -23,7 +23,7 @@ struct idt_ptr {
 /* Initialize the Interrupt Descriptor Table */
 extern void idt_init();
 
-/* Defined in boot.S */
+/* Defined in boot.asm */
 extern void load_idt(struct idt_ptr *idt_ptr);
 
 #endif

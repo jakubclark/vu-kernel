@@ -47,7 +47,7 @@ unsigned char keyboard_map[128] = {
 /* Initialize the keyboard driver */
 extern void kb_init();
 
-/* Defined in boot.S */
+/* Defined in boot.asm */
 extern void keyboard_handler(void);
 
 /* Block until a key is pressed, and return that char */

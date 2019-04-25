@@ -5,7 +5,7 @@ CFLAGS = $(SHARED_FLAGS)
 ASFLAGS = $(SHARED_FLAGS) -Wa,--divide
 
 OBJS := kernel.o
-ALL_OBJS = $(OBJS) chell.o basicio.o gdt.o idt.o keyboard.o memutil.o scrn.o string.o virtualmemory.o
+ALL_OBJS = $(OBJS) chell.o basicio.o gdt.o idt.o keyboard.o memutil.o scrn.o string.o virtualmemory.o multiboot_cmd.o
 DFILES = $(patsubst %.o,%.d,$(ALL_OBJS))
 
 all: kernel

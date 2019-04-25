@@ -27,6 +27,7 @@ void keyboard_handler_main(void) {
 
     if (keycode == ENTER_KEY_CODE) {
       keyboard_char = '\n';
+      println("");
       return;
     }
 

@@ -1,17 +1,14 @@
 CC=gcc-7
 SHARED_FLAGS = -fno-builtin -O2 -nostdinc -nostdlib -ffreestanding -g -Wall -Wextra \
-               -Werror -I../include -MMD -mno-red-zone -fno-pie -m32
+               -Werror -I../../include -MMD -mno-red-zone -fno-pie -m32
 CFLAGS = $(SHARED_FLAGS)
 
-OBJS := chell.o
+OBJS := multiboot_cmd.o
 DFILES = $(patsubst %.o,%.d,$(OBJS))
 
 all: $(OBJS)
-	make -C commands
-	cp commands/*.o .
 
 clean:
-	make -C commands clean
 	find -name "*~" -delete
 	rm -rf $(OBJS) $(DFILES)
 
