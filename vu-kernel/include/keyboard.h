@@ -47,7 +47,12 @@ unsigned char keyboard_map[128] = {
 /* Initialize the keyboard driver */
 extern void kb_init();
 
-/* Defined in boot.asm */
+/* Defined in boot.asm 
+ * Reads the pressed/released button.
+ * If a button was pressed, its ascii
+ * value is stored in `keyboard_char`.
+ * Releases are ignored.
+ * Valid characters are defined in `keyboard_map` */
 extern void keyboard_handler(void);
 
 /* Block until a key is pressed, and return that char */

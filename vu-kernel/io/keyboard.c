@@ -13,9 +13,11 @@ void kb_init(void) {
   outbyte(0x21, 0xFD);
 }
 
+/* Read the keycode. If it was pressed (not released),
+ * set keyboard_char to the associate character.
+ * For a list of "accepted" characters, see `keyboard_map. */ 
 void keyboard_handler_main(void) {
-  uint8_t status;
-  uint8_t keycode;
+  uint8_t status, keycode;
 
   /* write EOI */
   outbyte(0x20, 0x20);
@@ -27,27 +29,27 @@ void keyboard_handler_main(void) {
 
     if (keycode == ENTER_KEY_CODE) {
       keyboard_char = '\n';
-      println("");
       return;
     }
 
     if (keycode == BACKSPACE_KEY_CODE) {
-      backspace();
       keyboard_char = '\b';
       return;
     }
 
-    uint8_t pressed;
     /* Check if the key was released */
     if (keycode & 0x80) {
-      pressed = 0;
+      keyboard_char = NULL;
     } else {
-      pressed = 1;
-    }
-
-    if (pressed == 1) {
       keyboard_char = keyboard_map[(unsigned char)keycode];
-      putchar(keyboard_char);
     }
   }
+}
+
+uint8_t get_char() {
+  while(keyboard_char == NULL){
+    printf("");
+    continue;
+  }
+  return keyboard_char;
 }

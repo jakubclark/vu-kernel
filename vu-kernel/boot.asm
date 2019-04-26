@@ -13,6 +13,7 @@ global load_gdt
 extern kernel_main
 extern keyboard_handler_main
 extern gdtptr
+extern idtptr
 
 load_gdt:
     ; load the new GDT pointer
@@ -30,8 +31,7 @@ full_load_gdt:
     ret
 
 load_idt:
-	mov edx, [esp + 4]
-	lidt [edx]
+	lidt [idtptr]
 	sti
 	ret
 

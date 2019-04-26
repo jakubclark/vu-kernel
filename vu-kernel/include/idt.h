@@ -24,6 +24,6 @@ struct idt_ptr {
 extern void idt_init();
 
 /* Defined in boot.asm */
-extern void load_idt(struct idt_ptr *idt_ptr);
+extern void load_idt();
 
 #endif

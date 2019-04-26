@@ -15,7 +15,7 @@ extern void puts(uint8_t *str);
 /* Print `str` with `foreground` and `background` colors*/
 extern void puts_col(uint8_t *str, uint8_t foreground, uint8_t background);
 
-/* Backspace */
+/* Backspace. Go back by 1 character, on the current line*/
 extern void backspace();
 
 /* Initialize the screen*/

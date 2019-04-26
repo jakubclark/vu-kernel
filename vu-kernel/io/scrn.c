@@ -11,7 +11,8 @@
 #define VGA_START 0xB8000
 #define PRINTABLE(c) (c >= ' ')
 
-uint32_t offset = 0;
+/* The minimum_x position. Printing begins at x+1 */
+uint32_t min_x = 0;
 
 /* The VGA Screen buffer */
 uint16_t *Scrn;
@@ -54,8 +55,8 @@ void putcharCol(uint8_t c, uint16_t color) {
       Curx = 0;
       Cury++;
       break;
-    case 0x08:
-      if (Curx > 0) Curx--;
+    case '\b':
+      backspace();
       break;
     default:
       if (PRINTABLE(c)) {
@@ -89,9 +90,9 @@ void puts_col(unsigned char *str, uint8_t foreground, uint8_t background) {
 }
 
 void backspace() {
-  if (Curx > offset) Curx--;
+  if (Curx > min_x) Curx--;
   putchar(EmptySpace);
-  if (Curx > offset) Curx--;
+  if (Curx > min_x) Curx--;
 }
 
 void itoa(char *buf, int base, int d) {
