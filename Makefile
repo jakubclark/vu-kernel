@@ -1,4 +1,6 @@
+SRC_DIR=vu-kernel
 ISO_FILE=kernel.iso
+BIN_FILE=$(SRC_DIR)/kernel
 
 .PHONY: all kernel qemu iso clean
 
@@ -20,14 +22,15 @@ kernel:
 iso: $(ISO_FILE)
 
 $(ISO_FILE): kernel
+	grub-file --is-x86-multiboot $(BIN_FILE)
 	mkdir -p iso/boot/grub
 	cp grub.cfg iso/boot/grub/
-	cp vu-kernel/kernel iso/boot/
+	cp $(BIN_FILE) iso/boot/
 	touch kernel.iso
 	$(GRUB_MKRESCUE) -o $(ISO_FILE) iso
 
-qemu: kernel
-	qemu-system-i386 -kernel vu-kernel/kernel -monitor stdio -m $(MEM)
+qemu: iso
+	qemu-system-i386 -cdrom $(ISO_FILE) -monitor stdio -m $(MEM)
 
 clean:
 	make -C vu-kernel clean

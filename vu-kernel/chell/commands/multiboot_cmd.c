@@ -45,8 +45,8 @@ void print_multiboot_info() {
         mode_type = "unknown graphics mode";
         break;
     }
-    printf("vide_mode_type: %s, cmdline: 0x%x\n", mode_type, mbi->cmdline);
-    printf("width: 0x%x, height: 0x%x, depth: 0x%x\n", mbi->framebuffer_width,
+    printf("vide_mode_type: %s, vbe_mode: %d, cmdline: %d\n", mode_type, mbi->vbe_mode, mbi->cmdline);
+    printf("width: %d, height: %d, depth: %d\n", mbi->framebuffer_width,
            mbi->framebuffer_height, mbi->framebuffer_height);
     ;
   }

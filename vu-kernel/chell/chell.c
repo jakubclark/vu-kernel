@@ -1,5 +1,6 @@
 #include "colors.h"
 #include "keyboard.h"
+#include "memutil.h"
 #include "multiboot_cmd.h"
 #include "scrn.h"
 #include "string.h"
@@ -47,6 +48,8 @@ void chell_main() {
     if (char_ == '\n') {
       cmd_buffer[cmd_buffer_index] = '\0';
 
+      if (cmd_buffer_index == 0) goto prompt;
+
       if (strcmp(cmd_buffer, (uint8_t *)"help") == 0) {
         printf("HELP COMMAND GOES HERE");
         goto cmd_end;
@@ -81,12 +84,15 @@ void chell_main() {
         cmd_buffer_index++;
       } else {
         printf("\nCommand buffer overflow, please re-enter your command");
+        goto cmd_end;
       }
       goto end;
     }
 
   cmd_end:
     println("");
+    cmd_buffer_index = 0;
+    memset(cmd_buffer, 0, 256);
     goto prompt;
 
   prompt:
