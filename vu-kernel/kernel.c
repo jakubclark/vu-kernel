@@ -8,12 +8,6 @@
 #include "scrn.h"
 #include "types.h"
 
-#define CHECK_FLAG(flags, bit) ((flags) & (1 << (bit)))
-
-extern uint32_t mem_start_address;
-extern uint32_t mem_end_address;
-extern uint32_t mem_use_address;
-
 void print_colored_text() {
   puts((uint8_t *)"Hello world!\nThis is the second line!\tTab\n");
   puts((uint8_t *)"Very Long Chain of Chars\rCarriage return\n");

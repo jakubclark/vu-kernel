@@ -2,11 +2,10 @@
 #include "multiboot.h"
 #include "scrn.h"
 #include "types.h"
+#include "multiboot_cmd.h"
 
 uint32_t magic;
 multiboot_info_t *mbi;
-
-#define CHECK_FLAG(flags, bit) ((flags) & (1 << (bit)))
 
 void set_addrs(uint32_t magic_, multiboot_info_t *mbi_) {
   magic = magic_;
@@ -115,3 +114,4 @@ void print_multiboot_info() {
   }
   printf("bootloader name: %s", mbi->boot_loader_name);
 }
+
