@@ -1,3 +1,4 @@
+#include "chell/commands/memory_cmd.h"
 #include "chell/commands/multiboot_cmd.h"
 #include "io/keyboard.h"
 #include "io/scrn.h"
@@ -11,6 +12,21 @@ uint8_t IN_SHELL = 0;
 extern uint8_t keyboard_char;
 extern uint32_t min_x;
 
+uint8_t chell_logo[162] = {
+    ' ',  '_',  '_',  '_',  '_',  '_', ' ',  ' ',  '_', ' ',  ' ',  ' ', ' ',
+    ' ',  ' ',  ' ',  ' ',  ' ',  ' ', ' ',  ' ',  '_', ' ',  ' ',  '_', ' ',
+    '\n', '/',  ' ',  ' ',  '_',  '_', ' ',  '\\', '|', ' ',  '|',  ' ', ' ',
+    ' ',  ' ',  ' ',  ' ',  ' ',  ' ', ' ',  ' ',  '|', ' ',  '|',  '|', ' ',
+    '|',  '\n', '|',  ' ',  '/',  ' ', ' ',  '\\', '/', '|',  ' ',  '|', '_',
+    '_',  ' ',  ' ',  ' ',  ' ',  '_', '_',  '_',  ' ', '|',  ' ',  '|', '|',
+    ' ',  '|',  '\n', '|',  ' ',  '|', ' ',  ' ',  ' ', ' ',  '|',  ' ', '\'',
+    '_',  ' ',  '\\', ' ',  ' ',  '/', ' ',  '_',  ' ', '\\', '|',  ' ', '|',
+    '|',  ' ',  '|',  '\n', '|',  ' ', '\\', '_',  '_', '/',  '\\', '|', ' ',
+    '|',  ' ',  '|',  ' ',  '|',  '|', ' ',  ' ',  '_', '_',  '/',  '|', ' ',
+    '|',  '|',  ' ',  '|',  '\n', ' ', '\\', '_',  '_', '_',  '_',  '/', '|',
+    '_',  '|',  ' ',  '|',  '_',  '|', ' ',  '\\', '_', '_',  '_',  '|', '|',
+    '_',  '|',  '|',  '_',  '|',  '\n'};
+
 /* Prints "user@vu" */
 void print_prompt() {
   puts_col((uint8_t *)"user", LIGHTBLUE, DEFAULTBACKGROUND);
@@ -18,12 +34,21 @@ void print_prompt() {
   puts_col((uint8_t *)"vu> ", RED, DEFAULTBACKGROUND);
 }
 
+/* Prints the Chell logo */
+void print_logo() { puts_col(chell_logo, GREEN, DEFAULTBACKGROUND); }
+
 /* Prints a welcome screen, to chell! */
 void print_welcome() {
-  println("Welcome to Chell, a barebones shell!");
-  println("help: list available commands");
+  print_logo();
+  puts_col((uint8_t *)"Welcome to Chell, a barebones shell!\n",
+           DEFAULTFOREGROUND, DEFAULTBACKGROUND);
+  ;
+  puts_col((uint8_t *)"help", BROWN, DEFAULTBACKGROUND);
+  ;
+  puts_col((uint8_t *)": list available commands\n", DEFAULTFOREGROUND,
+           DEFAULTBACKGROUND);
+  ;
   print_prompt();
-  set_default_color(DEFAULTFOREGROUND, DEFAULTBACKGROUND);
 }
 
 void chell_main() {
@@ -41,7 +66,6 @@ void chell_main() {
 
   while (1) {
   loop:
-    printf("");
     char_ = get_char();
     putchar(char_);
 
@@ -68,6 +92,16 @@ void chell_main() {
       if (strcmp(cmd_buffer, (uint8_t *)"clear") == 0) {
         clear();
         goto prompt;
+      }
+
+      if (strcmp(cmd_buffer, (uint8_t *)"logo") == 0) {
+        print_logo();
+        goto cmd_end;
+      }
+
+      if (strcmp(cmd_buffer, (uint8_t *)"mem") == 0) {
+        print_avail();
+        goto cmd_end;
       }
 
       printf("UNKOWN COMMAND: `%s`", cmd_buffer);

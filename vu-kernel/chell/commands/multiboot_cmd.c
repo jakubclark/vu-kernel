@@ -64,18 +64,11 @@ void print_multiboot_info() {
     }
   }
 
-  if (CHECK_FLAG(mbi->flags, 4) && CHECK_FLAG(mbi->flags, 5)) {
-    printf("Both bits 4 and 5 are set.\n");
-    return;
-  }
-
   if (CHECK_FLAG(mbi->flags, 4)) {
     multiboot_aout_symbol_table_t *aout_sym = &(mbi->u.aout_sym);
 
-    printf(
-        "aout_symbol_table: tabsize: 0x%0x, "
-        "strsize = 0x%x`, addr: 0x%x\n",
-        aout_sym->tabsize, aout_sym->strsize, aout_sym->addr);
+    printf("aout_symbol_table: tabsize: 0x%0x, strsize = 0x%x`, addr: 0x%x\n",
+           aout_sym->tabsize, aout_sym->strsize, aout_sym->addr);
   }
 
   if (CHECK_FLAG(mbi->flags, 5)) {
@@ -113,5 +106,11 @@ void print_multiboot_info() {
       }
     }
   }
-  printf("bootloader name: %s", mbi->boot_loader_name);
+
+  printf("bootloader name: %s\n", mbi->boot_loader_name);
+  uint32_t multiboot_start = (uint32_t)mbi;
+  uint32_t multiboot_end = (uint32_t)mbi + sizeof(multiboot_info_t);
+
+  printf("multiboot_start: 0x%x, multiboot_end: 0x%x", multiboot_start,
+         multiboot_end);
 }

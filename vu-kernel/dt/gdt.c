@@ -1,7 +1,6 @@
 #include "dt/gdt.h"
 #include "std/types.h"
 
-struct gdt_entry gdt[3];
 struct gdt_ptr gdtptr;
 
 struct gdt_entry GDT[GDT_SIZE] = {
