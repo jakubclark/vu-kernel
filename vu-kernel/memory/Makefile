@@ -3,7 +3,7 @@ SHARED_FLAGS = -fno-builtin -O2 -nostdinc -nostdlib -ffreestanding -g -Wall -Wex
                -Werror -I../include -MMD -mno-red-zone -fno-pie -m32
 CFLAGS = $(SHARED_FLAGS)
 
-OBJS := memutil.o virtualmemory.o
+OBJS := memutil.o
 DFILES = $(patsubst %.o,%.d,$(OBJS))
 
 all: $(OBJS)
