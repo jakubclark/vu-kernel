@@ -1,4 +1,4 @@
-#include "types.h"
+#include "std/types.h"
 
 int8_t strcmp(const uint8_t* s1, const uint8_t* s2) {
   while (*s1 == *s2) {

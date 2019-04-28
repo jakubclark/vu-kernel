@@ -1,7 +1,7 @@
 /* some convenient functions - as we don't have libc, we must do
    everything ourselves */
 
-#include "types.h"
+#include "std/types.h"
 
 uint8_t *memcpy(unsigned char *dest, const unsigned char *src, int count) {
   int i;

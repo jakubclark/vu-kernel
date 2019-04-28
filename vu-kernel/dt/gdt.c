@@ -1,5 +1,5 @@
-#include "gdt.h"
-#include "types.h"
+#include "dt/gdt.h"
+#include "std/types.h"
 
 struct gdt_entry gdt[3];
 struct gdt_ptr gdtptr;

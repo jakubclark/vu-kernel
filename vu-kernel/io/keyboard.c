@@ -1,9 +1,9 @@
-#include "keyboard.h"
-#include "basicio.h"
-#include "chell.h"
-#include "colors.h"
-#include "scrn.h"
-#include "types.h"
+#include "io/keyboard.h"
+#include "chell/chell.h"
+#include "io/basicio.h"
+#include "io/scrn.h"
+#include "std/colors.h"
+#include "std/types.h"
 
 /* Holds the most recently pressed key */
 uint8_t keyboard_char = NULL;
@@ -15,7 +15,7 @@ void kb_init(void) {
 
 /* Read the keycode. If it was pressed (not released),
  * set keyboard_char to the associate character.
- * For a list of "accepted" characters, see `keyboard_map. */ 
+ * For a list of "accepted" characters, see `keyboard_map. */
 void keyboard_handler_main(void) {
   uint8_t status, keycode;
 
@@ -47,7 +47,7 @@ void keyboard_handler_main(void) {
 }
 
 uint8_t get_char() {
-  while(keyboard_char == NULL){
+  while (keyboard_char == NULL) {
     printf("");
     continue;
   }

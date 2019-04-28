@@ -2,7 +2,7 @@
 #define __MULTIBOOT_CMD_H
 
 #include "multiboot.h"
-#include "types.h"
+#include "std/types.h"
 
 #define CHECK_FLAG(flags, bit) ((flags) & (1 << (bit)))
 

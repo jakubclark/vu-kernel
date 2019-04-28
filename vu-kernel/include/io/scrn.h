@@ -1,7 +1,7 @@
 #ifndef __SCRN_H
 #define __SCRN_H
 
-#include "types.h"
+#include "std/types.h"
 
 /* Print `c` to the screen */
 extern void putchar(uint8_t c);

@@ -1,7 +1,7 @@
 #ifndef _IDT_H
 #define _IDT_H
 
-#include "types.h"
+#include "std/types.h"
 
 #define IDT_SIZE 256
 #define INTERRUPT_GATE 0x8e

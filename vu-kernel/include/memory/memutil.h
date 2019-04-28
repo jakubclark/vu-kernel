@@ -1,7 +1,7 @@
 #ifndef __MEM_H
 #define __MEM_H
 
-#include "types.h"
+#include "std/types.h"
 
 /* copy `count` bytes to `dest` from `src` */
 extern uint8_t *memcpy(uint8_t *dest, const uint8_t *src, int count);

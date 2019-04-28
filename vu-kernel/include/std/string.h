@@ -1,4 +1,4 @@
-#include "types.h"
+#include "std/types.h"
 
 /* Compares `s1` and `s2`. Returns 0 if equivalent, -1 otherwise. 
  * BOTH STRINGS MUST END WITH '\0'! */

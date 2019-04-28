@@ -1,7 +1,8 @@
 #ifndef __GDT_H
 #define __GDT_H
 
-#include "types.h"
+#include "std/types.h"
+
 #define GDT_SIZE 3
 #define GDT_MEM_LOW 0
 #define GDT_MEM_LEN 0xFFFFFFFF
@@ -24,8 +25,7 @@ struct gdt_entry {
   uint16_t base_low;   /* 'Low' 16-bits of the base */
   uint8_t base_middle; /* 'middle' 8 bits of the base */
 
-  uint8_t
-      type : 4; /* Flags for type of memory this descriptor describes */
+  uint8_t type : 4; /* Flags for type of memory this descriptor describes */
   uint8_t one : 1;
   uint8_t dpl : 2;     /* Descriptor privilege level - Ring level */
   uint8_t present : 1; /* 1 for any valid GDT entry */
@@ -34,8 +34,8 @@ struct gdt_entry {
   uint8_t avilable : 1;
   uint8_t zero : 1;
   uint8_t op_size : 1; /* Selects between 16-bit and 32-bit */
-  uint8_t gran : 1; /* If this bit is set, then 'limit' is a count of 4K
-                             blocks, not bytes */
+  uint8_t gran : 1;    /* If this bit is set, then 'limit' is a count of 4K
+                                blocks, not bytes */
 
   uint8_t base_high; /* High 8 bits of the base */
 } __attribute__((packed));

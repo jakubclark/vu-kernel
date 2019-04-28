@@ -1,10 +1,10 @@
-#include "colors.h"
-#include "keyboard.h"
-#include "memutil.h"
-#include "multiboot_cmd.h"
-#include "scrn.h"
-#include "string.h"
-#include "types.h"
+#include "chell/commands/multiboot_cmd.h"
+#include "io/keyboard.h"
+#include "io/scrn.h"
+#include "memory/memutil.h"
+#include "std/colors.h"
+#include "std/string.h"
+#include "std/types.h"
 
 uint8_t IN_SHELL = 0;
 

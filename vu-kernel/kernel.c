@@ -1,12 +1,12 @@
-#include "chell.h"
-#include "colors.h"
-#include "gdt.h"
-#include "idt.h"
-#include "keyboard.h"
+#include "chell/chell.h"
+#include "chell/commands/multiboot_cmd.h"
+#include "dt/gdt.h"
+#include "dt/idt.h"
+#include "io/keyboard.h"
+#include "io/scrn.h"
 #include "multiboot.h"
-#include "multiboot_cmd.h"
-#include "scrn.h"
-#include "types.h"
+#include "std/colors.h"
+#include "std/types.h"
 
 void print_colored_text() {
   puts((uint8_t *)"Hello world!\nThis is the second line!\tTab\n");

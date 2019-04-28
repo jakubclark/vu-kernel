@@ -1,8 +1,8 @@
+#include "chell/commands/multiboot_cmd.h"
+#include "io/scrn.h"
 #include "kernel.h"
 #include "multiboot.h"
-#include "scrn.h"
-#include "types.h"
-#include "multiboot_cmd.h"
+#include "std/types.h"
 
 uint32_t magic;
 multiboot_info_t *mbi;
@@ -44,7 +44,8 @@ void print_multiboot_info() {
         mode_type = "unknown graphics mode";
         break;
     }
-    printf("vide_mode_type: %s, vbe_mode: %d, cmdline: %d\n", mode_type, mbi->vbe_mode, mbi->cmdline);
+    printf("vide_mode_type: %s, vbe_mode: %d, cmdline: %d\n", mode_type,
+           mbi->vbe_mode, mbi->cmdline);
     printf("width: %d, height: %d, depth: %d\n", mbi->framebuffer_width,
            mbi->framebuffer_height, mbi->framebuffer_height);
     ;
@@ -114,4 +115,3 @@ void print_multiboot_info() {
   }
   printf("bootloader name: %s", mbi->boot_loader_name);
 }
-

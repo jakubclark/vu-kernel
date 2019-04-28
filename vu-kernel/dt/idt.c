@@ -1,7 +1,7 @@
-#include "idt.h"
-#include "basicio.h"
-#include "keyboard.h"
-#include "types.h"
+#include "dt/idt.h"
+#include "io/basicio.h"
+#include "io/keyboard.h"
+#include "std/types.h"
 
 struct idt_entry IDT[IDT_SIZE];
 struct idt_ptr idtptr;

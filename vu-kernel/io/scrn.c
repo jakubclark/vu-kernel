@@ -1,10 +1,10 @@
-#include "scrn.h"
-#include "basicio.h"
-#include "chell.h"
-#include "colors.h"
-#include "keyboard.h"
-#include "memutil.h"
-#include "types.h"
+#include "io/scrn.h"
+#include "chell/chell.h"
+#include "io/basicio.h"
+#include "io/keyboard.h"
+#include "memory/memutil.h"
+#include "std/colors.h"
+#include "std/types.h"
 
 #define COLS 80
 #define ROWS 25

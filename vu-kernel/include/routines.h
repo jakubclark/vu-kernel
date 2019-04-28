@@ -1,7 +1,7 @@
 #ifndef __ROUTINES_H
 #define __ROUTINES_H
 
-#include "types.h"
+#include "std/types.h"
 
 /* Enable interrupts */
 static __inline__ void enable() { __asm__("sti" : : : "memory"); }

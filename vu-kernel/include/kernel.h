@@ -1,7 +1,7 @@
 #ifndef _KERNEL_H_
 #define _KERNEL_H_
 #include "multiboot.h"
-#include "types.h"
+#include "std/types.h"
 
 #define KERNEL_BOOT_STACK_SIZE 0x4000
 #define KERNEL_BOOT_STACK_ALIGNMENT 0x1000

@@ -1,6 +1,6 @@
-SRC_DIR=vu-kernel
+KERNEL_DIR=vu-kernel
 ISO_FILE=kernel.iso
-BIN_FILE=$(SRC_DIR)/kernel
+BIN_FILE=$(KERNEL_DIR)/kernel
 
 .PHONY: all kernel qemu iso clean
 
