@@ -3,8 +3,8 @@
 #include "io/keyboard.h"
 #include "std/types.h"
 
-struct idt_entry IDT[IDT_SIZE];
-struct idt_ptr idtptr;
+idt_entry_t IDT[IDT_SIZE];
+idt_ptr_t idtptr;
 
 void idt_init(void) {
   uint32_t keyboard_handler_addr = (uint32_t)keyboard_handler;

@@ -12,7 +12,7 @@ else
     $(error "Cannot find grub-mkrescue or grub2-mkrescue")
 endif
 
-MEM := 32M
+MEM := 128M
 
 all: kernel
 

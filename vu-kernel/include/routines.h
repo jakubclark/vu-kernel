@@ -4,13 +4,13 @@
 #include "std/types.h"
 
 /* Enable interrupts */
-static __inline__ void enable() { __asm__("sti" : : : "memory"); }
+  void enable() { __asm__("sti" : : : "memory"); }
 
 /* Disable interrupts */
-static __inline__ void disable() { __asm__ __volatile__("cli" : : : "memory"); }
+  void disable() { __asm__ __volatile__("cli" : : : "memory"); }
 
 /* Get the interrupt flag value from the EFLAGS register */
-static __inline__ void SET_IF(uint32_t IF) {
+  void SET_IF(uint32_t IF) {
   __asm__ __volatile__(
       "pushfl                 \n"
       "popl   %%eax           \n"
@@ -24,7 +24,7 @@ static __inline__ void SET_IF(uint32_t IF) {
 }
 
 /* Get the interrupt flag value from the EFLAGS register */
-static __inline__ uint32_t GET_IF() {
+  uint32_t GET_IF() {
   register uint32_t IF;
   __asm__ __volatile__(
       "pushfl                 \n"
@@ -38,5 +38,5 @@ static __inline__ uint32_t GET_IF() {
 }
 
 /* Halt the whole system */
-static __inline__ void halt() { __asm__ __volatile__("cli\n hlt"); }
+  void halt() { __asm__ __volatile__("cli\n hlt"); }
 #endif
