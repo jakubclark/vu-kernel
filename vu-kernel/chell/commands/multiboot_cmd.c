@@ -30,54 +30,54 @@ void print_multiboot_info() {
     printf("boot_device: 0x%x\n", mbi->boot_device);
   }
 
-  // if (CHECK_FLAG(mbi->flags, 2)) {
-  //   char *mode_type;
-  //   switch (mbi->vbe_mode) {
-  //     case 0:
-  //       mode_type = "linear graphics";
-  //       break;
-  //     case 1:
-  //       mode_type = "EGA-standard text";
-  //       break;
+  if (CHECK_FLAG(mbi->flags, 2)) {
+    char *mode_type;
+    switch (mbi->vbe_mode) {
+      case 0:
+        mode_type = "linear graphics";
+        break;
+      case 1:
+        mode_type = "EGA-standard text";
+        break;
 
-  //     default:
-  //       mode_type = "unknown graphics mode";
-  //       break;
-  //   }
-  //   printf("vide_mode_type: %s, vbe_mode: %d, cmdline: %d\n", mode_type,
-  //          mbi->vbe_mode, mbi->cmdline);
-  //   printf("width: %d, height: %d, depth: %d\n", mbi->framebuffer_width,
-  //          mbi->framebuffer_height, mbi->framebuffer_height);
-  //   ;
-  // }
+      default:
+        mode_type = "unknown graphics mode";
+        break;
+    }
+    printf("vide_mode_type: %s, vbe_mode: %d, cmdline: %d\n", mode_type,
+           mbi->vbe_mode, mbi->cmdline);
+    printf("width: %d, height: %d, depth: %d\n", mbi->framebuffer_width,
+           mbi->framebuffer_height, mbi->framebuffer_height);
+    ;
+  }
 
-  // if (CHECK_FLAG(mbi->flags, 3)) {
-  //   multiboot_module_t *mod;
-  //   int i;
-  //   printf("mods_count: %d, mods_addr: 0x%x\n", mbi->mods_count,
-  //          mbi->mods_addr);
+  if (CHECK_FLAG(mbi->flags, 3)) {
+    multiboot_module_t *mod;
+    int i;
+    printf("mods_count: %d, mods_addr: 0x%x\n", mbi->mods_count,
+           mbi->mods_addr);
 
-  //   for (i = 0, mod = (multiboot_module_t *)mbi->mods_addr;
-  //        i < (int)mbi->mods_count; i++, mod++) {
-  //     printf("mods_start: 0x%x, mods_end: 0x%x\n", mod->mod_start,
-  //            mod->mod_end);
-  //   }
-  // }
+    for (i = 0, mod = (multiboot_module_t *)mbi->mods_addr;
+         i < (int)mbi->mods_count; i++, mod++) {
+      printf("mods_start: 0x%x, mods_end: 0x%x\n", mod->mod_start,
+             mod->mod_end);
+    }
+  }
 
-  // if (CHECK_FLAG(mbi->flags, 4)) {
-  //   multiboot_aout_symbol_table_t *aout_sym = &(mbi->u.aout_sym);
+  if (CHECK_FLAG(mbi->flags, 4)) {
+    multiboot_aout_symbol_table_t *aout_sym = &(mbi->u.aout_sym);
 
-  //   printf("aout_symbol_table: tabsize: 0x%0x, strsize = 0x%x`, addr: 0x%x\n",
-  //          aout_sym->tabsize, aout_sym->strsize, aout_sym->addr);
-  // }
+    printf("aout_symbol_table: tabsize: 0x%0x, strsize = 0x%x`, addr: 0x%x\n",
+           aout_sym->tabsize, aout_sym->strsize, aout_sym->addr);
+  }
 
-  // if (CHECK_FLAG(mbi->flags, 5)) {
-  //   multiboot_elf_section_header_table_t *elf_sec = &(mbi->u.elf_sec);
-  //   printf(
-  //       "elf_sec: num: %u, size: 0x%x, "
-  //       "addr: 0x%x, shndx: 0x%x\n",
-  //       elf_sec->num, elf_sec->size, elf_sec->addr, elf_sec->shndx);
-  // }
+  if (CHECK_FLAG(mbi->flags, 5)) {
+    multiboot_elf_section_header_table_t *elf_sec = &(mbi->u.elf_sec);
+    printf(
+        "elf_sec: num: %u, size: 0x%x, "
+        "addr: 0x%x, shndx: 0x%x\n",
+        elf_sec->num, elf_sec->size, elf_sec->addr, elf_sec->shndx);
+  }
 
   if (CHECK_FLAG(mbi->flags, 6)) {
     multiboot_memory_map_t *mmap;
@@ -107,7 +107,7 @@ void print_multiboot_info() {
     }
   }
 
-  // printf("bootloader name: %s\n", mbi->boot_loader_name);
+  printf("bootloader name: %s\n", mbi->boot_loader_name);
   uint32_t multiboot_start = (uint32_t) &mbi;
   uint32_t multiboot_end = multiboot_start + sizeof(multiboot_info_t);
 

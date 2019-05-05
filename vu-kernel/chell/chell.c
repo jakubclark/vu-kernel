@@ -135,7 +135,7 @@ void chell_main() {
         printf("ptr: %d, &ptr: %d, *ptr: %d\n", ptr, &ptr, *ptr);
         *ptr = 55;
         printf("ptr: %d, &ptr: %d, *ptr: %d\n", ptr, &ptr, *ptr);
-        // kfree(*ptr);
+        kfree(*ptr);
         goto cmd_end;
       }
 

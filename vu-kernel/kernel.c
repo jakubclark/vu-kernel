@@ -9,6 +9,7 @@
 #include "memory/memutil.h"
 #include "memory/physmem.h"
 #include "multiboot.h"
+#include "std/colors.h"
 #include "std/types.h"
 
 void check_multiboot(uint32_t magic, multiboot_info_t *mbi) {
@@ -33,40 +34,32 @@ void check_multiboot(uint32_t magic, multiboot_info_t *mbi) {
     }
   }
 
-  set_addrs(magic, mbi);
+  phys_num_pages = phys_mem_bytes / PAGE_SIZE;
 
+  set_addrs(magic, mbi);
   init_mem(phys_mem_bytes);
 }
 
 void init() {
   vga_init();
-  println("VGA Done");
-
-  // pmem_init_bitmap();
-  // initialise_paging();
-  // println("PAG Done");
+  puts_col((uint8_t *)"VGA Done\n", CYAN, DEFAULTBACKGROUND);
 
   gdt_init();
-  println("GDT Done");
+  puts_col((uint8_t *)"GDT Done\n", CYAN, DEFAULTBACKGROUND);
 
   idt_init();
-  println("IDT Done");
+  puts_col((uint8_t *)"IDT Done\n", CYAN, DEFAULTBACKGROUND);
 
   pmem_init_bitmap();
+  puts_col((uint8_t *)"PMM Done\n", CYAN, DEFAULTBACKGROUND);
 
   kb_init();
-  println("KBD Done");
+  puts_col((uint8_t *)"KBD Done\n", CYAN, DEFAULTBACKGROUND);
 }
 
 void kernel_main(uint32_t magic, multiboot_info_t *mbi) {
   init();
   check_multiboot(magic, mbi);
-
-  uint32_t theory_free_pages = phys_mem_bytes / PAGE_SIZE;
-  phys_num_pages = theory_free_pages;
-  printf("phys_mem_bytes=%d\n", phys_mem_bytes);
-  printf("phys_num_pages=%d\n", phys_num_pages);
-
   chell_main();
   while (1)
     ;
