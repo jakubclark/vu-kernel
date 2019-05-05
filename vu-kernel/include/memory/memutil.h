@@ -1,7 +1,13 @@
-#ifndef __MEM_H
-#define __MEM_H
+#ifndef __MEMUTIL_H
+#define __MEMUTIL_H
 
 #include "std/types.h"
+
+/* The total number of bytes in RAM */
+extern uint32_t phys_mem_bytes;
+/* The total number of physical pages
+ * Ideally, this is `phys_mem_bytes` / `PAGE_SIZE` */
+extern uint32_t phys_num_pages;
 
 /* copy `count` bytes to `dest` from `src` */
 extern uint8_t *memcpy(uint8_t *dest, const uint8_t *src, int count);

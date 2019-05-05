@@ -7,18 +7,18 @@
 #define INTERRUPT_GATE 0x8e
 #define KERNEL_CODE_SEGMENT_OFFSET 0x08
 
-struct idt_entry {
+typedef struct idt_entry {
   uint16_t offset_lowerbits;
   uint16_t selector;
   uint8_t zero;
   uint8_t type_attr;
   uint16_t offset_higherbits;
-};
+} idt_entry_t;
 
-struct idt_ptr {
-	uint16_t limit;
-	uint32_t base;
-} __attribute__((packed));
+typedef struct idt_ptr {
+  uint16_t limit;
+  uint32_t base;
+} __attribute__((packed)) idt_ptr_t;
 
 /* Initialize the Interrupt Descriptor Table */
 extern void idt_init();

@@ -1,9 +1,7 @@
-#ifndef _KERNEL_H_
-#define _KERNEL_H_
-#include "multiboot.h"
-#include "std/types.h"
+#ifndef __KERNEL_H
+#define __KERNEL_H
 
-#define KERNEL_BOOT_STACK_SIZE 0x4000
-#define KERNEL_BOOT_STACK_ALIGNMENT 0x1000
+// #define RAM 0x1900000
+#define RAM 0x1EE0000
 
-#endif  // _KERNEL_H_
+#endif

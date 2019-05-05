@@ -1,42 +1,66 @@
+#include "kernel.h"
 #include "chell/chell.h"
+#include "chell/commands/memtest_cmd.h"
 #include "chell/commands/multiboot_cmd.h"
 #include "dt/gdt.h"
 #include "dt/idt.h"
 #include "io/keyboard.h"
 #include "io/scrn.h"
+#include "memory/memutil.h"
+#include "memory/physmem.h"
 #include "multiboot.h"
 #include "std/colors.h"
 #include "std/types.h"
 
-void print_colored_text() {
-  puts((uint8_t *)"Hello world!\nThis is the second line!\tTab\n");
-  puts((uint8_t *)"Very Long Chain of Chars\rCarriage return\n");
+void check_multiboot(uint32_t magic, multiboot_info_t *mbi) {
+  if (magic != MULTIBOOT_BOOTLOADER_MAGIC) {
+    printf("MULTIBOOT_BOOTLADER_MAGIC is incorrect: 0x%x\n", magic);
+    // TODO: PANIC
+    while (1)
+      ;
+  }
 
-  puts_col((uint8_t *)"Black on blue\n", BLACK, BLUE);
-  puts_col((uint8_t *)"Green on cyan\n", GREEN, CYAN);
-  puts_col((uint8_t *)"Red on magenta\n", RED, MAGENTA);
-  puts_col((uint8_t *)"Brown on light gray\n", BROWN, LIGHTGRAY);
-  puts_col((uint8_t *)"Dark gray on light blue\n", DARKGRAY, LIGHTBLUE);
-  puts_col((uint8_t *)"Light green on ligt cyan\n", LIGHTGREEN, LIGHTCYAN);
-  puts_col((uint8_t *)"Light red on pink\n", LIGHTRED, PINK);
-  puts_col((uint8_t *)"Yellow on white\n", YELLOW, WHITE);
+  phys_mem_bytes = 0;
 
-  printf("Formatted string: str_arg: `%s`, int_arg: `%d`, int_arg: `%d`",
-         "ArgumentA", 59, -12);
+  if (CHECK_FLAG(mbi->flags, 2)) {
+    multiboot_memory_map_t *mmap;
+    for (mmap = (multiboot_memory_map_t *)mbi->mmap_addr;
+         (unsigned long)mmap < mbi->mmap_addr + mbi->mmap_length;
+         mmap = (multiboot_memory_map_t *)((unsigned long)mmap + mmap->size +
+                                           sizeof(mmap->size))) {
+
+      if (mmap->type == 1)
+        phys_mem_bytes += mmap->length;
+    }
+  }
+
+  phys_num_pages = phys_mem_bytes / PAGE_SIZE;
+
+  set_addrs(magic, mbi);
+  init_mem(phys_mem_bytes);
 }
 
 void init() {
   vga_init();
+  puts_col((uint8_t *)"VGA Done\n", CYAN, DEFAULTBACKGROUND);
+
   gdt_init();
+  puts_col((uint8_t *)"GDT Done\n", CYAN, DEFAULTBACKGROUND);
+
   idt_init();
+  puts_col((uint8_t *)"IDT Done\n", CYAN, DEFAULTBACKGROUND);
+
+  pmem_init_bitmap();
+  puts_col((uint8_t *)"PMM Done\n", CYAN, DEFAULTBACKGROUND);
+
   kb_init();
+  puts_col((uint8_t *)"KBD Done\n", CYAN, DEFAULTBACKGROUND);
 }
 
 void kernel_main(uint32_t magic, multiboot_info_t *mbi) {
   init();
-  set_addrs(magic, mbi);
+  check_multiboot(magic, mbi);
   chell_main();
-
   while (1)
     ;
 }

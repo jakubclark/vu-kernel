@@ -18,7 +18,7 @@
 #define KERNEL_CS 1
 #define KERNEL_DS 2
 
-struct gdt_entry {
+typedef struct gdt_entry {
   /* Low 8 bits of the "limit", or length of memory this descriptor refers to.
    */
   uint16_t limit_low;
@@ -38,12 +38,12 @@ struct gdt_entry {
                                 blocks, not bytes */
 
   uint8_t base_high; /* High 8 bits of the base */
-} __attribute__((packed));
+} __attribute__((packed)) gdt_entry_t;
 
-struct gdt_ptr {
+typedef struct gdt_ptr {
   uint16_t limit;
   uint32_t base;
-} __attribute__((packed));
+} __attribute__((packed)) gdt_ptr_t;
 
 #define GDT_ENTRY(gdt_type, gdt_base, gdt_limit, gdt_dpl)                      \
   {                                                                            \

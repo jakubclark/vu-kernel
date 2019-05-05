@@ -1,6 +1,5 @@
 #include "chell/commands/multiboot_cmd.h"
 #include "io/scrn.h"
-#include "kernel.h"
 #include "multiboot.h"
 #include "std/types.h"
 
@@ -12,6 +11,7 @@ void set_addrs(uint32_t magic_, multiboot_info_t *mbi_) {
   mbi = mbi_;
 }
 
+
 void print_multiboot_info() {
   if (magic == MULTIBOOT_BOOTLOADER_MAGIC) {
     printf("Multiboot magic number is correct: 0x%x\n", magic);
@@ -19,7 +19,7 @@ void print_multiboot_info() {
     printf("Multiboot magic number is incorrect: 0x%x\n", magic);
   }
 
-  printf("flags: 0x%x\n", mbi->flags);
+  // printf("flags: 0x%x\n", mbi->flags);
 
   if (CHECK_FLAG(mbi->flags, 0)) {
     printf("mem_lower: %uKB, mem_upper: %uKB\n", mbi->mem_lower,
@@ -108,8 +108,8 @@ void print_multiboot_info() {
   }
 
   printf("bootloader name: %s\n", mbi->boot_loader_name);
-  uint32_t multiboot_start = (uint32_t)mbi;
-  uint32_t multiboot_end = (uint32_t)mbi + sizeof(multiboot_info_t);
+  uint32_t multiboot_start = (uint32_t) &mbi;
+  uint32_t multiboot_end = multiboot_start + sizeof(multiboot_info_t);
 
   printf("multiboot_start: 0x%x, multiboot_end: 0x%x", multiboot_start,
          multiboot_end);
