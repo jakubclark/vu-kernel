@@ -1,5 +1,6 @@
 #include "io/keyboard.h"
 #include "io/scrn.h"
+#include "memory/memutil.h"
 #include "memory/physmem.h"
 #include "std/colors.h"
 #include "std/types.h"
@@ -28,13 +29,6 @@ void assert_page_contents(char *p, char c, uint32_t j) {
       };
     }
   }
-}
-
-void *memset_(void *s, int c, size_t n) {
-  unsigned char *p = s;
-  while (n--)
-    *p++ = (unsigned char)c;
-  return s;
 }
 
 void init_mem(uint32_t sz) { memsize = sz; }
@@ -108,7 +102,7 @@ void test_alloc_advanced(uint32_t verbose) {
   for (uint32_t i = 0; i < nsample; i++) {
     char *ptr = (char *)p[i];
     char v = 0x42 + i % 256;
-    memset_(ptr, v, PAGE_SIZE);
+    memset((uint8_t *)ptr, v, PAGE_SIZE);
     assert_page_contents(ptr, v, i);
 
     if (i % 200 == 0)
@@ -171,7 +165,7 @@ void test_alloc_oom(uint32_t verbose) {
   for (uint32_t i = 0; i < nsample; i++) {
     p[i] = (uint32_t *)page_alloc(1);
     if (p[i]) {
-      memset_(p[i], 0x42, PAGE_SIZE);
+      memset((uint8_t *)p[i], 0x42, PAGE_SIZE);
       allocated++;
       if (i % 200 == 0)
         puts_col((uint8_t *)".", RED, DEFAULTBACKGROUND);

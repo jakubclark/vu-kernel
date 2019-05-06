@@ -50,7 +50,7 @@ void init() {
   idt_init();
   puts_col((uint8_t *)"IDT Done\n", CYAN, DEFAULTBACKGROUND);
 
-  pmem_init_bitmap();
+  physmem_init();
   puts_col((uint8_t *)"PMM Done\n", CYAN, DEFAULTBACKGROUND);
 
   kb_init();

@@ -7,6 +7,7 @@ idt_entry_t IDT[IDT_SIZE];
 idt_ptr_t idtptr;
 
 void idt_init(void) {
+  // TODO: use `register_interrupt_handler`
   uint32_t keyboard_handler_addr = (uint32_t)keyboard_handler;
 
   IDT[0x21].offset_lowerbits = keyboard_handler_addr & 0xffff;

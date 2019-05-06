@@ -3,6 +3,9 @@
 
 #include "std/types.h"
 
+#define PAGE_SIZE 4096
+#define PAGE_BITS 32
+
 /* The total number of bytes in RAM */
 extern uint32_t phys_mem_bytes;
 /* The total number of physical pages

@@ -103,7 +103,7 @@ void chell_main() {
       }
 
       if (strcmp(cmd_buffer, (uint8_t *)"mem") == 0) {
-        uint32_t free_pages_before = pmem_count_free_pages();
+        uint32_t free_pages_before = count_free_pages();
 
         println("Starting easy tests...");
         test_alloc_easy(0);
@@ -119,7 +119,7 @@ void chell_main() {
 
         printf("All tests passed!\n\n");
 
-        uint32_t free_pages_after = pmem_count_free_pages();
+        uint32_t free_pages_after = count_free_pages();
         printf("free_pages_before=%d, free_pages_after=%d, lost %d pages in "
                "the process...",
                free_pages_before, free_pages_after,
