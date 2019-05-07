@@ -22,6 +22,7 @@ OBJS := $(KERNEL_DIR)/kernel.o \
 	\
 	$(KERNEL_DIR)/memory/memutil.o \
 	$(KERNEL_DIR)/memory/physmem.o \
+	$(KERNEL_DIR)/memory/paging.o \
 	\
 	$(KERNEL_DIR)/std/string.o \
 

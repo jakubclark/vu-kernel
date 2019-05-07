@@ -23,7 +23,8 @@
 #define ALLOCATE 1
 #define RESERVED 2
 
-/* Ignore the first 2 MB */
+/* The first 4096 bytes * 1024 = 4 MB
+ * are reserved for the kernel */
 #define KERN_PAGES 1024
 
 /* Initialize the frames/pages bitmap */

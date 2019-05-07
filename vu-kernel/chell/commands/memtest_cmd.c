@@ -7,7 +7,7 @@
 
 uint32_t memsize;
 
-uint32_t *page_alloc(uint32_t n) { return kmalloc(n * PAGE_SIZE); }
+uint32_t *page_alloc(uint32_t n) { return (uint32_t *) kmalloc(n * PAGE_SIZE); }
 
 void page_free(uint32_t *addr) { kfree((uint32_t)addr); }
 
@@ -167,7 +167,7 @@ void test_alloc_oom(uint32_t verbose) {
     if (p[i]) {
       memset((uint8_t *)p[i], 0x42, PAGE_SIZE);
       allocated++;
-      if (i % 200 == 0)
+      if(i % 200 == 0)
         puts_col((uint8_t *)".", RED, DEFAULTBACKGROUND);
     }
   }

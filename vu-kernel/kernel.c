@@ -7,6 +7,7 @@
 #include "io/keyboard.h"
 #include "io/scrn.h"
 #include "memory/memutil.h"
+#include "memory/paging.h"
 #include "memory/physmem.h"
 #include "multiboot.h"
 #include "std/colors.h"
@@ -40,26 +41,39 @@ void check_multiboot(uint32_t magic, multiboot_info_t *mbi) {
   init_mem(phys_mem_bytes);
 }
 
-void init() {
+void init(uint32_t magic, multiboot_info_t *mbi) {
+  set_default_color(CYAN, DEFAULTBACKGROUND);
+
   vga_init();
-  puts_col((uint8_t *)"VGA Done\n", CYAN, DEFAULTBACKGROUND);
+  println("VGA Done");
 
   gdt_init();
-  puts_col((uint8_t *)"GDT Done\n", CYAN, DEFAULTBACKGROUND);
+  println("GDT Done");
 
   idt_init();
-  puts_col((uint8_t *)"IDT Done\n", CYAN, DEFAULTBACKGROUND);
+  println("IDT Done");
 
   physmem_init();
-  puts_col((uint8_t *)"PMM Done\n", CYAN, DEFAULTBACKGROUND);
+  println("PMM Done");
+
+  check_multiboot(magic, mbi);
+  println("MBI Done");
+
+  initialize_paging(phys_num_pages);
+  println("VMM Done");
 
   kb_init();
-  puts_col((uint8_t *)"KBD Done\n", CYAN, DEFAULTBACKGROUND);
+  println("KBD Done");
+
+  for (uint8_t i = 0; i < 80; i++) {
+    putchar('-');
+  }
+
+  set_default_color(DEFAULTFOREGROUND, DEFAULTBACKGROUND);
 }
 
 void kernel_main(uint32_t magic, multiboot_info_t *mbi) {
-  init();
-  check_multiboot(magic, mbi);
+  init(magic, mbi);
   chell_main();
   while (1)
     ;
