@@ -6,7 +6,7 @@
 /* Total allocatable memory = PAGES * PAGE_SIZE */
 uint32_t physmem_pages[PAGES];
 
-void physmem_init() {
+void pmm_init() {
   for (uint32_t page = 0; page < phys_num_pages; page++) {
     physmem_pages[page] = 0xFFFFFFFF;
   }
@@ -122,6 +122,8 @@ int16_t get_free(uint32_t size, uint32_t *start, uint32_t *end,
 
   for (p = KERN_PAGES / PAGE_BITS; p < phys_num_pages; p++) {
     for (b = 0; b < PAGE_BITS; b++) {
+      if (physmem_pages[p] == 0xFFFFFFFF)
+        continue;
       if (get_bit(physmem_pages[p], b) == FREE) {
         if (found_start == 0) {
           found_start = 1;

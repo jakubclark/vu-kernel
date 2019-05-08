@@ -7,17 +7,18 @@
 #include "io/keyboard.h"
 #include "io/scrn.h"
 #include "memory/memutil.h"
+#include "memory/paging.h"
 #include "memory/physmem.h"
 #include "multiboot.h"
+#include "routines.h"
 #include "std/colors.h"
 #include "std/types.h"
 
 void check_multiboot(uint32_t magic, multiboot_info_t *mbi) {
   if (magic != MULTIBOOT_BOOTLOADER_MAGIC) {
-    printf("MULTIBOOT_BOOTLADER_MAGIC is incorrect: 0x%x\n", magic);
-    // TODO: PANIC
-    while (1)
-      ;
+    printf("MULTIBOOT_BOOTLOADER_MAGIC is incorrect: 0x%x\n", magic);
+    PANIC((uint8_t *)"Multiboot Information is invalid-> "
+                     "Multiboot_Bootloader_Magic is invalid");
   }
 
   phys_mem_bytes = 0;
@@ -40,26 +41,50 @@ void check_multiboot(uint32_t magic, multiboot_info_t *mbi) {
   init_mem(phys_mem_bytes);
 }
 
-void init() {
+void init(uint32_t magic, multiboot_info_t *mbi) {
+  set_default_color(CYAN, DEFAULTBACKGROUND);
+
   vga_init();
-  puts_col((uint8_t *)"VGA Done\n", CYAN, DEFAULTBACKGROUND);
+  for (uint8_t i = 0; i < 80; i++)
+    putchar('-');
+  println("| VGA Done\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t  |");
 
   gdt_init();
-  puts_col((uint8_t *)"GDT Done\n", CYAN, DEFAULTBACKGROUND);
+  println("| GDT Done\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t  |");
 
   idt_init();
-  puts_col((uint8_t *)"IDT Done\n", CYAN, DEFAULTBACKGROUND);
+  println("| IDT Done\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t  |");
 
-  physmem_init();
-  puts_col((uint8_t *)"PMM Done\n", CYAN, DEFAULTBACKGROUND);
+  pmm_init();
+  println("| PMM Done\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t  |");
+
+  check_multiboot(magic, mbi);
+  println("| MBI Done\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t  |");
+
+  vmm_init(phys_num_pages);
+  println("| VMM Done\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t  |");
 
   kb_init();
-  puts_col((uint8_t *)"KBD Done\n", CYAN, DEFAULTBACKGROUND);
+  println("| KBD Done\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t  |");
+
+  for (uint8_t i = 0; i < 80; i++)
+    putchar('-');
+
+  set_default_color(MAGENTA, DEFAULTBACKGROUND);
+
+  for (uint8_t i = 0; i < 80; i++)
+    putchar('-');
+
+  printf("| The system has %d bytes of physical memory\t\t\t\t\t\t\t  |\n", phys_mem_bytes);
+
+  for (uint8_t i = 0; i < 80; i++)
+    putchar('-');
+
+  set_default_color(DEFAULTFOREGROUND, DEFAULTBACKGROUND);
 }
 
 void kernel_main(uint32_t magic, multiboot_info_t *mbi) {
-  init();
-  check_multiboot(magic, mbi);
+  init(magic, mbi);
   chell_main();
   while (1)
     ;

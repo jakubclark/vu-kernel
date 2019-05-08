@@ -4,7 +4,9 @@
 #include "io/keyboard.h"
 #include "io/scrn.h"
 #include "memory/memutil.h"
+#include "memory/paging.h"
 #include "memory/physmem.h"
+#include "routines.h"
 #include "std/colors.h"
 #include "std/string.h"
 #include "std/types.h"
@@ -14,20 +16,17 @@ uint8_t IN_SHELL = 0;
 extern uint8_t keyboard_char;
 extern uint32_t min_x;
 
-uint8_t chell_logo[162] = {
-    ' ',  '_',  '_',  '_',  '_',  '_', ' ',  ' ',  '_', ' ',  ' ',  ' ', ' ',
-    ' ',  ' ',  ' ',  ' ',  ' ',  ' ', ' ',  ' ',  '_', ' ',  ' ',  '_', ' ',
-    '\n', '/',  ' ',  ' ',  '_',  '_', ' ',  '\\', '|', ' ',  '|',  ' ', ' ',
-    ' ',  ' ',  ' ',  ' ',  ' ',  ' ', ' ',  ' ',  '|', ' ',  '|',  '|', ' ',
-    '|',  '\n', '|',  ' ',  '/',  ' ', ' ',  '\\', '/', '|',  ' ',  '|', '_',
-    '_',  ' ',  ' ',  ' ',  ' ',  '_', '_',  '_',  ' ', '|',  ' ',  '|', '|',
-    ' ',  '|',  '\n', '|',  ' ',  '|', ' ',  ' ',  ' ', ' ',  '|',  ' ', '\'',
-    '_',  ' ',  '\\', ' ',  ' ',  '/', ' ',  '_',  ' ', '\\', '|',  ' ', '|',
-    '|',  ' ',  '|',  '\n', '|',  ' ', '\\', '_',  '_', '/',  '\\', '|', ' ',
-    '|',  ' ',  '|',  ' ',  '|',  '|', ' ',  ' ',  '_', '_',  '/',  '|', ' ',
-    '|',  '|',  ' ',  '|',  '\n', ' ', '\\', '_',  '_', '_',  '_',  '/', '|',
-    '_',  '|',  ' ',  '|',  '_',  '|', ' ',  '\\', '_', '_',  '_',  '|', '|',
-    '_',  '|',  '|',  '_',  '|',  '\n'};
+uint8_t *chell_logo =
+    (uint8_t *)"---------------------------------------------------------------"
+               "-----------------"
+               "|  _____ _          _ _ \t\t\t\t\t\t\t\t\t\t\t\t\t  |\n"
+               "| /  __ \\ |        | | |\t\t\t\t\t\t\t\t\t\t\t\t\t  |\n"
+               "| | /  \\/ |__   ___| | |\t\t\t\t\t\t\t\t\t\t\t\t\t  |\n"
+               "| | |   | '_ \\ / _ \\ | |\t\t\t\t\t\t\t\t\t\t\t\t\t  |\n"
+               "| | \\__/\\ | | |  __/ | |\t\t\t\t\t\t\t\t\t\t\t\t\t  |\n"
+               "|  \\____/_| |_|\\___|_|_|\t\t\t\t\t\t\t\t\t\t\t\t\t  |\n"
+               "---------------------------------------------------------------"
+               "----------------\n";
 
 /* Prints "user@vu" */
 void print_prompt() {
@@ -37,19 +36,33 @@ void print_prompt() {
 }
 
 /* Prints the Chell logo */
-void print_logo() { puts_col(chell_logo, MAGENTA, DEFAULTBACKGROUND); }
+void print_logo() { puts_col(chell_logo, RED, DEFAULTBACKGROUND); }
+
+/* Prints the `help` command */
+void print_help() {
+  println("Available commands:");
+  puts_col((uint8_t *)"'help', 'clear', 'colors', 'logo', 'multiboot', 'mem'",
+           BROWN, DEFAULTBACKGROUND);
+}
 
 /* Prints a welcome screen, to chell! */
 void print_welcome() {
   print_logo();
-  println("");
+
+  for (uint8_t i = 0; i < 80; i++)
+    putcharCol('-', DEFAULTBACKGROUND << 4 | DEFAULTFOREGROUND);
+
   puts_col((uint8_t *)"Welcome to ", DEFAULTFOREGROUND, DEFAULTBACKGROUND);
-  puts_col((uint8_t *)"Chell", MAGENTA, DEFAULTBACKGROUND);
+  puts_col((uint8_t *)"Chell", RED, DEFAULTBACKGROUND);
   puts_col((uint8_t *)", a barebones shell!\n", DEFAULTFOREGROUND,
            DEFAULTBACKGROUND);
   puts_col((uint8_t *)"help", BROWN, DEFAULTBACKGROUND);
   puts_col((uint8_t *)": list available commands\n", DEFAULTFOREGROUND,
            DEFAULTBACKGROUND);
+
+  for (uint8_t i = 0; i < 80; i++) {
+    putchar('-');
+  }
   print_prompt();
 }
 
@@ -69,6 +82,7 @@ void chell_main() {
   while (1) {
   loop:
     char_ = get_char();
+    disable();
     putchar(char_);
 
     if (char_ == '\n') {
@@ -78,12 +92,7 @@ void chell_main() {
         goto prompt;
 
       if (strcmp(cmd_buffer, (uint8_t *)"help") == 0) {
-        printf("HELP COMMAND GOES HERE");
-        goto cmd_end;
-      }
-
-      if (strcmp(cmd_buffer, (uint8_t *)"index") == 0) {
-        printf("INDEX: `%d`", cmd_buffer_index);
+        print_help();
         goto cmd_end;
       }
 
@@ -114,7 +123,7 @@ void chell_main() {
         println("Finished hard tests!\n");
 
         println("Starting OOM  tests...");
-        test_alloc_oom(0);
+        test_alloc_oom(1);
         println("Finished OOM  tests!\n");
 
         printf("All tests passed!\n\n");
@@ -125,17 +134,6 @@ void chell_main() {
                free_pages_before, free_pages_after,
                free_pages_before - free_pages_after);
 
-        goto cmd_end;
-      }
-
-      if (strcmp(cmd_buffer, (uint8_t *)"kmalloc") == 0) {
-        println("Allocating 4096 bytes");
-        uint32_t *ptr = (uint32_t *)kmalloc(sizeof(uint32_t));
-        println("Allocation successful");
-        printf("ptr: %d, &ptr: %d, *ptr: %d\n", ptr, &ptr, *ptr);
-        *ptr = 55;
-        printf("ptr: %d, &ptr: %d, *ptr: %d\n", ptr, &ptr, *ptr);
-        kfree(*ptr);
         goto cmd_end;
       }
 
@@ -179,6 +177,7 @@ void chell_main() {
 
   end:
     keyboard_char = NULL;
+    enable();
     goto loop;
   }
   IN_SHELL = 0;

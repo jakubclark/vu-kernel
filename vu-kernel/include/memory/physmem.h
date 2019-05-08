@@ -23,11 +23,12 @@
 #define ALLOCATE 1
 #define RESERVED 2
 
-/* Ignore the first 2 MB */
+/* The first 4096 bytes * 1024 = 4 MB
+ * are reserved for the kernel */
 #define KERN_PAGES 1024
 
 /* Initialize the frames/pages bitmap */
-extern void physmem_init();
+extern void pmm_init();
 /* Request a pointer to continous frames/pages of at least `size` bytes */
 extern void *kmalloc(uint32_t size);
 /* Free the frames/pages referenced by `address` */

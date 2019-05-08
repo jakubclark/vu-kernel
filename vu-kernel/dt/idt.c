@@ -1,6 +1,7 @@
 #include "dt/idt.h"
 #include "io/basicio.h"
 #include "io/keyboard.h"
+#include "memory/paging.h"
 #include "std/types.h"
 
 idt_entry_t IDT[IDT_SIZE];
@@ -30,6 +31,13 @@ void idt_init(void) {
 
   outbyte(0x21, 0xff);
   outbyte(0xA1, 0xff);
+
+  uint32_t page_fault_handler_addr = (uint32_t)page_fault_main;
+  IDT[14].offset_lowerbits = page_fault_handler_addr & 0xffff;
+  IDT[14].selector = KERNEL_CODE_SEGMENT_OFFSET;
+  IDT[14].zero = 0;
+  IDT[14].type_attr = INTERRUPT_GATE;
+  IDT[14].offset_higherbits = (page_fault_handler_addr & 0xffff0000) >> 16;
 
   idtptr.limit = sizeof(IDT);
   idtptr.base = (unsigned long)IDT;

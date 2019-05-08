@@ -7,7 +7,10 @@ ASFLAGS = $(SHARED_FLAGS) -Wa,--divide
 
 KERNEL_DIR = .
 
-OBJS := $(KERNEL_DIR)/kernel.o \
+OBJS := \
+	$(KERNEL_DIR)/kernel.o \
+	$(KERNEL_DIR)/routines.o \
+	\
 	$(KERNEL_DIR)/chell/chell.o \
 	$(KERNEL_DIR)/chell/commands/colors_cmd.o \
 	$(KERNEL_DIR)/chell/commands/multiboot_cmd.o \
@@ -22,6 +25,7 @@ OBJS := $(KERNEL_DIR)/kernel.o \
 	\
 	$(KERNEL_DIR)/memory/memutil.o \
 	$(KERNEL_DIR)/memory/physmem.o \
+	$(KERNEL_DIR)/memory/paging.o \
 	\
 	$(KERNEL_DIR)/std/string.o \
 
