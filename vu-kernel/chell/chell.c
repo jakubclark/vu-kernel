@@ -9,6 +9,7 @@
 #include "std/colors.h"
 #include "std/string.h"
 #include "std/types.h"
+#include "routines.h"
 
 uint8_t IN_SHELL = 0;
 
@@ -80,6 +81,7 @@ void chell_main() {
   while (1) {
   loop:
     char_ = get_char();
+    disable();
     putchar(char_);
 
     if (char_ == '\n') {
@@ -174,6 +176,7 @@ void chell_main() {
 
   end:
     keyboard_char = NULL;
+    enable();
     goto loop;
   }
   IN_SHELL = 0;

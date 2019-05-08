@@ -3,6 +3,11 @@
 
 #include "std/types.h"
 
+#define PAGE_SHIFT 12
+#define PAGE_MASK (~(PAGE_SIZE - 1))
+
+#define PAGE_ALIGN(addr) (((addr) + PAGE_SIZE - 1) & (PAGE_MASK))
+
 /* The page is present in memory */
 #define PRESENT 0x1
 /* Page is read and write */
@@ -16,7 +21,7 @@
 /* Page has been accessed */
 #define ACCESSED 0x20
 
-extern void initialize_paging(uint32_t phys_num_pages);
+extern void vmm_init(uint32_t phys_num_pages);
 
 extern void page_fault(registers_t regs);
 

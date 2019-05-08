@@ -6,7 +6,7 @@
 /* Total allocatable memory = PAGES * PAGE_SIZE */
 uint32_t physmem_pages[PAGES];
 
-void physmem_init() {
+void pmm_init() {
   for (uint32_t page = 0; page < phys_num_pages; page++) {
     physmem_pages[page] = 0xFFFFFFFF;
   }

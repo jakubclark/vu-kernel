@@ -6,11 +6,12 @@
 uint32_t magic;
 multiboot_info_t *mbi;
 
+extern uint32_t kernel_top;
+
 void set_addrs(uint32_t magic_, multiboot_info_t *mbi_) {
   magic = magic_;
   mbi = mbi_;
 }
-
 
 void print_multiboot_info() {
   if (magic == MULTIBOOT_BOOTLOADER_MAGIC) {
@@ -33,16 +34,16 @@ void print_multiboot_info() {
   if (CHECK_FLAG(mbi->flags, 2)) {
     char *mode_type;
     switch (mbi->vbe_mode) {
-      case 0:
-        mode_type = "linear graphics";
-        break;
-      case 1:
-        mode_type = "EGA-standard text";
-        break;
+    case 0:
+      mode_type = "linear graphics";
+      break;
+    case 1:
+      mode_type = "EGA-standard text";
+      break;
 
-      default:
-        mode_type = "unknown graphics mode";
-        break;
+    default:
+      mode_type = "unknown graphics mode";
+      break;
     }
     printf("vide_mode_type: %s, vbe_mode: %d, cmdline: %d\n", mode_type,
            mbi->vbe_mode, mbi->cmdline);
@@ -73,10 +74,9 @@ void print_multiboot_info() {
 
   if (CHECK_FLAG(mbi->flags, 5)) {
     multiboot_elf_section_header_table_t *elf_sec = &(mbi->u.elf_sec);
-    printf(
-        "elf_sec: num: %u, size: 0x%x, "
-        "addr: 0x%x, shndx: 0x%x\n",
-        elf_sec->num, elf_sec->size, elf_sec->addr, elf_sec->shndx);
+    printf("elf_sec: num: %u, size: 0x%x, "
+           "addr: 0x%x, shndx: 0x%x\n",
+           elf_sec->num, elf_sec->size, elf_sec->addr, elf_sec->shndx);
   }
 
   if (CHECK_FLAG(mbi->flags, 6)) {
@@ -108,9 +108,9 @@ void print_multiboot_info() {
   }
 
   printf("bootloader name: %s\n", mbi->boot_loader_name);
-  uint32_t multiboot_start = (uint32_t) &mbi;
+  uint32_t multiboot_start = (uint32_t)&mbi;
   uint32_t multiboot_end = multiboot_start + sizeof(multiboot_info_t);
 
-  printf("multiboot_start: 0x%x, multiboot_end: 0x%x", multiboot_start,
-         multiboot_end);
+  printf("multiboot_start: 0x%x, multiboot_end: 0x%x\nkernel_top 0x%x",
+         multiboot_start, multiboot_end, (uint32_t)&kernel_top);
 }

@@ -28,7 +28,7 @@
 #define KERN_PAGES 1024
 
 /* Initialize the frames/pages bitmap */
-extern void physmem_init();
+extern void pmm_init();
 /* Request a pointer to continous frames/pages of at least `size` bytes */
 extern void *kmalloc(uint32_t size);
 /* Free the frames/pages referenced by `address` */

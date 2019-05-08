@@ -2,12 +2,8 @@
 #include "io/scrn.h"
 #include "memory/memutil.h"
 #include "memory/physmem.h"
+#include "routines.h"
 #include "std/types.h"
-
-#define PAGE_SHIFT 12
-#define PAGE_MASK (~(PAGE_SIZE - 1))
-
-#define PAGE_ALIGN(addr) (((addr) + PAGE_SIZE - 1) & (PAGE_MASK))
 
 extern void load_page_directory(uint32_t);
 extern void enable_paging();
@@ -28,7 +24,7 @@ uint32_t palloc() {
   return tmp;
 }
 
-void initialize_paging(uint32_t phys_num_pages) {
+void vmm_init(uint32_t phys_num_pages) {
   placement_address = PAGE_ALIGN((uint32_t)&kernel_top);
 
   uint32_t num_dir_entries_needed = phys_num_pages / 1024 + 1;
@@ -91,51 +87,50 @@ void page_fault(registers_t regs) {
   switch (err) {
   case 0:
     err_str =
-        (uint8_t *)"Supervisory process tried to read a non-present page entry";
+        (uint8_t *)"Supervisory process tried to read a non-present page entry\n";
     break;
 
   case 1:
     err_str =
         (uint8_t *)"Supervisory process tried to read a page and caused a "
-                   "protection fault";
+                   "protection fault\n";
     break;
 
   case 2:
     err_str =
         (uint8_t
-             *)"Supervisory process tried to write to a non-present page entry";
+             *)"Supervisory process tried to write to a non-present page entry\n";
     break;
 
   case 3:
     err_str =
         (uint8_t *)"Supervisory process tried to write a page and caused a "
-                   "protection fault";
+                   "protection fault\n";
     break;
 
   case 4:
-    err_str = (uint8_t *)"User process tried to read a non-present page entry";
+    err_str = (uint8_t *)"User process tried to read a non-present page entry\n";
     break;
 
   case 5:
     err_str = (uint8_t *)" User process tried to read a page and caused a "
-                         "protection fault";
+                         "protection fault\n";
     break;
 
   case 6:
     err_str =
-        (uint8_t *)"User process tried to write to a non-present page entry";
+        (uint8_t *)"User process tried to write to a non-present page entry\n";
     break;
 
   case 7:
     err_str = (uint8_t *)"User process tried to write a page and caused a "
-                         "protection fault";
+                         "protection fault\n";
     break;
 
   default:
-    err_str = (uint8_t *)"Unkown error type";
+    err_str = (uint8_t *)"Unkown error type\n";
   }
 
   puts(err_str);
-  while (1)
-    ;
+  PANIC((uint8_t *) "");
 }

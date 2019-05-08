@@ -2,12 +2,13 @@
 #include "io/scrn.h"
 #include "memory/memutil.h"
 #include "memory/physmem.h"
+#include "routines.h"
 #include "std/colors.h"
 #include "std/types.h"
 
 uint32_t memsize;
 
-uint32_t *page_alloc(uint32_t n) { return (uint32_t *) kmalloc(n * PAGE_SIZE); }
+uint32_t *page_alloc(uint32_t n) { return (uint32_t *)kmalloc(n * PAGE_SIZE); }
 
 void page_free(uint32_t *addr) { kfree((uint32_t)addr); }
 
@@ -15,18 +16,15 @@ void assert(int b) {
   if (b)
     return;
 
-  printf("ASSERTION ERROR! HALTING THE SYSTEM. b: %d", b);
-  while (1)
-    ;
+  PANIC((uint8_t *) "Failed to assert");
 }
 
 void assert_page_contents(char *p, char c, uint32_t j) {
   for (uint32_t i = 0; i < PAGE_SIZE; i++) {
     if (p[i] != c) {
-      printf("Expected to find `%d`, found `%d` instead. page[%d], char[%d]", c,
+      printf("Expected to find `%d`, found `%d` instead. page[%d], char[%d]\n", c,
              p[i], j, i);
-      while (1) {
-      };
+      PANIC((uint8_t *) "Failed to assert_page_contents");
     }
   }
 }
@@ -167,7 +165,7 @@ void test_alloc_oom(uint32_t verbose) {
     if (p[i]) {
       memset((uint8_t *)p[i], 0x42, PAGE_SIZE);
       allocated++;
-      if(i % 200 == 0)
+      if (i % 200 == 0)
         puts_col((uint8_t *)".", RED, DEFAULTBACKGROUND);
     }
   }

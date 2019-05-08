@@ -10,15 +10,14 @@
 #include "memory/paging.h"
 #include "memory/physmem.h"
 #include "multiboot.h"
+#include "routines.h"
 #include "std/colors.h"
 #include "std/types.h"
 
 void check_multiboot(uint32_t magic, multiboot_info_t *mbi) {
   if (magic != MULTIBOOT_BOOTLOADER_MAGIC) {
-    printf("MULTIBOOT_BOOTLADER_MAGIC is incorrect: 0x%x\n", magic);
-    // TODO: PANIC
-    while (1)
-      ;
+    printf("MULTIBOOT_BOOTLOADER_MAGIC is incorrect: 0x%x\n", magic);
+    PANIC((uint8_t *) "Multiboot Information is invalid-> Bootloader magic");
   }
 
   phys_mem_bytes = 0;
@@ -53,21 +52,27 @@ void init(uint32_t magic, multiboot_info_t *mbi) {
   idt_init();
   println("IDT Done");
 
-  physmem_init();
+  pmm_init();
   println("PMM Done");
 
   check_multiboot(magic, mbi);
   println("MBI Done");
 
-  initialize_paging(phys_num_pages);
+  vmm_init(phys_num_pages);
   println("VMM Done");
 
   kb_init();
   println("KBD Done");
 
-  for (uint8_t i = 0; i < 80; i++) {
+  set_default_color(MAGENTA, DEFAULTBACKGROUND);
+
+  for (uint8_t i = 0; i < 80; i++)
     putchar('-');
-  }
+
+  printf("The system has %d bytes\n", phys_mem_bytes);
+
+  for (uint8_t i = 0; i < 80; i++)
+    putchar('-');
 
   set_default_color(DEFAULTFOREGROUND, DEFAULTBACKGROUND);
 }
