@@ -1,11 +1,18 @@
-bits 32
-section .multiboot_header
-        align 4
-        dd 0x1BADB002
-        dd 0x00
-        dd - (0x1BADB002 + 0x00)
+MBOOT_PAGE_ALIGN	equ 1<<0
+MBOOT_MEM_MAP		equ 1<<1
+MBOOT_VIDEO_MODE	equ 1<<2
+MBOOT_HEADER_MAGIC	equ 0x1BADB002
+MBOOT_HEADER_FLAGS	equ MBOOT_PAGE_ALIGN | MBOOT_MEM_MAP
+MBOOT_CHECKSUM		equ -(MBOOT_HEADER_MAGIC + MBOOT_HEADER_FLAGS)
 
-section .text
+[bits 32]
+
+[section .multiboot_header]
+dd MBOOT_HEADER_MAGIC	; header value for GRUB
+dd MBOOT_HEADER_FLAGS	; grub settings
+dd MBOOT_CHECKSUM ; ensure above values are correct
+
+[section .text]
 
 global start
 global keyboard_handler
@@ -31,7 +38,7 @@ page_fault_main:
     push fs
     push gs
 
-    mov ax, 0x10 ; set kernel data segment descriptor
+    mov ax, 0x10
     mov ds, ax
     mov es, ax
     mov fs, ax
@@ -43,14 +50,14 @@ page_fault_main:
     pop fs
     pop es
 
-    pop eax      ; reload original data segment descriptor
+    pop eax
     mov ds, ax
     mov es, ax
     mov fs, ax
     mov gs, ax
 
     popa
-    add esp, 8   ; clean up the pushed error code and pushed ISR number
+    add esp, 8
     sti
     iret
 
@@ -66,7 +73,6 @@ enable_paging:
    ret
 
 load_gdt:
-    ; load the new GDT pointer
     cli
     lgdt [gdtptr]
     jmp 0x08:full_load_gdt
@@ -99,6 +105,6 @@ loop:
     hlt
     jmp loop
 
-section .bss
-resb 8192        ; 8KB for stack
+[section .bss]
+resb 8192
 stack_space:

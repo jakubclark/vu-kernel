@@ -6,30 +6,27 @@
 #include "memory/memutil.h"
 #include "memory/paging.h"
 #include "memory/physmem.h"
+#include "routines.h"
 #include "std/colors.h"
 #include "std/string.h"
 #include "std/types.h"
-#include "routines.h"
 
 uint8_t IN_SHELL = 0;
 
 extern uint8_t keyboard_char;
 extern uint32_t min_x;
 
-uint8_t chell_logo[162] = {
-    ' ',  '_',  '_',  '_',  '_',  '_', ' ',  ' ',  '_', ' ',  ' ',  ' ', ' ',
-    ' ',  ' ',  ' ',  ' ',  ' ',  ' ', ' ',  ' ',  '_', ' ',  ' ',  '_', ' ',
-    '\n', '/',  ' ',  ' ',  '_',  '_', ' ',  '\\', '|', ' ',  '|',  ' ', ' ',
-    ' ',  ' ',  ' ',  ' ',  ' ',  ' ', ' ',  ' ',  '|', ' ',  '|',  '|', ' ',
-    '|',  '\n', '|',  ' ',  '/',  ' ', ' ',  '\\', '/', '|',  ' ',  '|', '_',
-    '_',  ' ',  ' ',  ' ',  ' ',  '_', '_',  '_',  ' ', '|',  ' ',  '|', '|',
-    ' ',  '|',  '\n', '|',  ' ',  '|', ' ',  ' ',  ' ', ' ',  '|',  ' ', '\'',
-    '_',  ' ',  '\\', ' ',  ' ',  '/', ' ',  '_',  ' ', '\\', '|',  ' ', '|',
-    '|',  ' ',  '|',  '\n', '|',  ' ', '\\', '_',  '_', '/',  '\\', '|', ' ',
-    '|',  ' ',  '|',  ' ',  '|',  '|', ' ',  ' ',  '_', '_',  '/',  '|', ' ',
-    '|',  '|',  ' ',  '|',  '\n', ' ', '\\', '_',  '_', '_',  '_',  '/', '|',
-    '_',  '|',  ' ',  '|',  '_',  '|', ' ',  '\\', '_', '_',  '_',  '|', '|',
-    '_',  '|',  '|',  '_',  '|',  '\n'};
+uint8_t *chell_logo =
+    (uint8_t *)"---------------------------------------------------------------"
+               "-----------------"
+               "|  _____ _          _ _ \t\t\t\t\t\t\t\t\t\t\t\t\t  |\n"
+               "| /  __ \\ |        | | |\t\t\t\t\t\t\t\t\t\t\t\t\t  |\n"
+               "| | /  \\/ |__   ___| | |\t\t\t\t\t\t\t\t\t\t\t\t\t  |\n"
+               "| | |   | '_ \\ / _ \\ | |\t\t\t\t\t\t\t\t\t\t\t\t\t  |\n"
+               "| | \\__/\\ | | |  __/ | |\t\t\t\t\t\t\t\t\t\t\t\t\t  |\n"
+               "|  \\____/_| |_|\\___|_|_|\t\t\t\t\t\t\t\t\t\t\t\t\t  |\n"
+               "---------------------------------------------------------------"
+               "----------------\n";
 
 /* Prints "user@vu" */
 void print_prompt() {
@@ -51,7 +48,10 @@ void print_help() {
 /* Prints a welcome screen, to chell! */
 void print_welcome() {
   print_logo();
-  println("");
+
+  for (uint8_t i = 0; i < 80; i++)
+    putcharCol('-', DEFAULTBACKGROUND << 4 | DEFAULTFOREGROUND);
+
   puts_col((uint8_t *)"Welcome to ", DEFAULTFOREGROUND, DEFAULTBACKGROUND);
   puts_col((uint8_t *)"Chell", RED, DEFAULTBACKGROUND);
   puts_col((uint8_t *)", a barebones shell!\n", DEFAULTFOREGROUND,
@@ -59,6 +59,7 @@ void print_welcome() {
   puts_col((uint8_t *)"help", BROWN, DEFAULTBACKGROUND);
   puts_col((uint8_t *)": list available commands\n", DEFAULTFOREGROUND,
            DEFAULTBACKGROUND);
+
   for (uint8_t i = 0; i < 80; i++) {
     putchar('-');
   }
