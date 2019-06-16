@@ -3,20 +3,13 @@
 #include "io/keyboard.h"
 #include "memory/paging.h"
 #include "std/types.h"
+#include "drivers/ata/ata.h"
 
 idt_entry_t IDT[IDT_SIZE];
 idt_ptr_t idtptr;
 
 void idt_init(void) {
-  // TODO: use `register_interrupt_handler`
-  uint32_t keyboard_handler_addr = (uint32_t)keyboard_handler;
-
-  IDT[0x21].offset_lowerbits = keyboard_handler_addr & 0xffff;
-  IDT[0x21].selector = KERNEL_CODE_SEGMENT_OFFSET;
-  IDT[0x21].zero = 0;
-  IDT[0x21].type_attr = INTERRUPT_GATE;
-  IDT[0x21].offset_higherbits = (keyboard_handler_addr & 0xffff0000) >> 16;
-
+  // Remap PIC
   outbyte(0x20, 0x11);
   outbyte(0xA0, 0x11);
 
@@ -32,15 +25,32 @@ void idt_init(void) {
   outbyte(0x21, 0xff);
   outbyte(0xA1, 0xff);
 
-  uint32_t page_fault_handler_addr = (uint32_t)page_fault_main;
-  IDT[14].offset_lowerbits = page_fault_handler_addr & 0xffff;
-  IDT[14].selector = KERNEL_CODE_SEGMENT_OFFSET;
-  IDT[14].zero = 0;
-  IDT[14].type_attr = INTERRUPT_GATE;
-  IDT[14].offset_higherbits = (page_fault_handler_addr & 0xffff0000) >> 16;
-
   idtptr.limit = sizeof(IDT);
   idtptr.base = (unsigned long)IDT;
 
+  // Install Keyboard Handler
+  install_ir(0x21, INTERRUPT_GATE, KERNEL_CODE_SEGMENT_OFFSET,
+             keyboard_handler);
+
+  // Install Page Fault Handler
+  install_ir(0XE, INTERRUPT_GATE, KERNEL_CODE_SEGMENT_OFFSET, page_fault_main);
+
+  // // Install Floppy Handler
+  // install_ir(0x26, INTERRUPT_GATE, KERNEL_CODE_SEGMENT_OFFSET, floppy_int);
+
+  // Install ATA Handler
+  // install_ir()
+
   load_idt();
+}
+
+void install_ir(uint32_t i, uint16_t type_attr, uint16_t selector,
+                void *irq_func) {
+  uint32_t ir_addr = (uint32_t)irq_func;
+
+  IDT[i].offset_lowerbits = (uint16_t)ir_addr & 0xFFFF;
+  IDT[i].offset_higherbits = (uint16_t)(ir_addr >> 16) & 0xFFFF;
+  IDT[i].zero = 0;
+  IDT[i].type_attr = (uint8_t)type_attr;
+  IDT[i].selector = selector;
 }

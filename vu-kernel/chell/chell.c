@@ -10,6 +10,7 @@
 #include "std/colors.h"
 #include "std/string.h"
 #include "std/types.h"
+#include "drivers/pci/pci.h"
 
 uint8_t IN_SHELL = 0;
 
@@ -108,6 +109,11 @@ void chell_main() {
 
       if (strcmp(cmd_buffer, (uint8_t *)"logo") == 0) {
         print_logo();
+        goto cmd_end;
+      }
+
+      if(strcmp(cmd_buffer, (uint8_t *)"pci") == 0){
+        pci_enum_buses();
         goto cmd_end;
       }
 

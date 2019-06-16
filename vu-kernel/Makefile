@@ -10,11 +10,18 @@ KERNEL_DIR = .
 OBJS := \
 	$(KERNEL_DIR)/kernel.o \
 	$(KERNEL_DIR)/routines.o \
+	$(KERNEL_DIR)/device.o \
 	\
 	$(KERNEL_DIR)/chell/chell.o \
 	$(KERNEL_DIR)/chell/commands/colors_cmd.o \
 	$(KERNEL_DIR)/chell/commands/multiboot_cmd.o \
 	$(KERNEL_DIR)/chell/commands/memtest_cmd.o \
+	\
+	$(KERNEL_DIR)/fs/vfs.o \
+	$(KERNEL_DIR)/fs/fat.o \
+	\
+	$(KERNEL_DIR)/drivers/pci/pci.o \
+	$(KERNEL_DIR)/drivers/ata/ata.o \
 	\
 	$(KERNEL_DIR)/dt/gdt.o \
 	$(KERNEL_DIR)/dt/idt.o \
@@ -23,6 +30,7 @@ OBJS := \
 	$(KERNEL_DIR)/io/keyboard.o \
 	$(KERNEL_DIR)/io/scrn.o \
 	\
+	$(KERNEL_DIR)/memory/dma.o \
 	$(KERNEL_DIR)/memory/memutil.o \
 	$(KERNEL_DIR)/memory/physmem.o \
 	$(KERNEL_DIR)/memory/paging.o \
