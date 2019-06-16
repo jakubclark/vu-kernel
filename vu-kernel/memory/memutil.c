@@ -6,6 +6,20 @@
 uint32_t phys_mem_bytes;
 uint32_t phys_num_pages;
 
+void memcpy_a(void *dest, void *src, int size) {
+  asm volatile("rep movsb"
+               : "=c"((int){0})
+               : "D"(dest), "S"(src), "c"(size)
+               : "flags", "memory");
+}
+
+void memset_a(void *start, uint32_t val, uint32_t len) {
+  asm volatile("rep stosb"
+               : "=c"((int){0})
+               : "D"(start), "a"(val), "c"(len)
+               : "flags", "memory");
+}
+
 uint8_t *memcpy(unsigned char *dest, const unsigned char *src, int count) {
   int i;
   for (i = 0; i < count; i++) dest[i] = src[i];

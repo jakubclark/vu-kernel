@@ -12,6 +12,10 @@ extern uint32_t phys_mem_bytes;
  * Ideally, this is `phys_mem_bytes` / `PAGE_SIZE` */
 extern uint32_t phys_num_pages;
 
+extern void memcpy_a(void *dest, void *src, int size);
+
+extern void memset_a(void *start, uint32_t val, uint32_t len);
+
 /* copy `count` bytes to `dest` from `src` */
 extern uint8_t *memcpy(uint8_t *dest, const uint8_t *src, int count);
 /* set `count` bytes to `dest` with a value of `val` */

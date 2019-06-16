@@ -13,6 +13,8 @@
 #include "routines.h"
 #include "std/colors.h"
 #include "std/types.h"
+#include "fs/vfs.h"
+#include "drivers/floppy/floppy.h"
 
 void check_multiboot(uint32_t magic, multiboot_info_t *mbi) {
   if (magic != MULTIBOOT_BOOTLOADER_MAGIC) {
@@ -56,16 +58,23 @@ void init(uint32_t magic, multiboot_info_t *mbi) {
   println("| IDT Done\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t  |");
 
   pmm_init();
-  println("| PMM Done\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t  |");
+  // println("| PMM Done\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t  |");
 
   check_multiboot(magic, mbi);
-  println("| MBI Done\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t  |");
+  // println("| MBI Done\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t  |");
 
   vmm_init(phys_num_pages);
-  println("| VMM Done\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t  |");
+  // println("| VMM Done\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t  |");
 
   kb_init();
-  println("| KBD Done\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t  |");
+  // println("| KBD Done\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t  |");
+
+  vfs_init();
+  println("| VFS Done\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t  |");
+
+  floppy_init();
+  println("| FLP Done\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t  |");
+
 
   for (uint8_t i = 0; i < 80; i++)
     putchar('-');

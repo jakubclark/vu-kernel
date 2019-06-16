@@ -26,4 +26,8 @@ extern void idt_init();
 /* Defined in boot.asm */
 extern void load_idt();
 
+/* Install an Interrupt Request Handler */
+extern void install_ir(uint32_t i, uint16_t type_attr, uint16_t selector,
+                       void *irq_func);
+
 #endif

@@ -21,12 +21,14 @@ global load_gdt
 global enable_paging
 global load_page_directory
 global page_fault_main
+global floppy_int
 
 extern kernel_main
 extern keyboard_handler_main
 extern gdtptr
 extern idtptr
 extern page_fault
+extern floppy_irq_done
 
 page_fault_main:
     pusha
@@ -93,6 +95,14 @@ load_idt:
 
 keyboard_handler:
     call keyboard_handler_main
+    iretd
+
+floppy_int:
+    pushad
+    inc byte [floppy_irq_done]
+    mov al, 0x20
+    out 0x20, al
+    popad
     iretd
 
 start:
