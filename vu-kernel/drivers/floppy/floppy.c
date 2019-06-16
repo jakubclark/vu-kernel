@@ -1,19 +1,3 @@
-/*
- *  Copyright 2016 Davide Pianca
- *
- *  Licensed under the Apache License, Version 2.0 (the "License");
- *  you may not use this file except in compliance with the License.
- *  You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
- */
-
 #include "drivers/floppy/floppy.h"
 #include "fs/fat.h"
 #include "device.h"
@@ -41,7 +25,7 @@ static char *drive_types[8] = {
 
 static const char *status[] = {0, "error", "invalid", "drive"};
 
-// extern void floppy_int();
+// extern void floppy_handler();
 
 void floppy_init() {
   int ndrives = floppy_detect_drives();
@@ -53,8 +37,10 @@ void floppy_init() {
 }
 
 void floppy_wait_irq() {
+  println("Waiting for floppy irq");
   while (floppy_irq_done == 0)
     ;
+  println("IRQ done");
   floppy_irq_done = 0;
 }
 
@@ -133,6 +119,7 @@ void floppy_read_sector_imp(uint8_t head, uint8_t track, uint8_t sector) {
 char *floppy_read_sector(int lba) {
   if (cur_drive > 3)
     return (char *)-1;
+  // printf("floppy_read_sector. lba=%d\n", lba);
   int head = 0, track = 0, sector = 1;
   floppy_lba_to_chs(lba, &head, &track, &sector);
   floppy_control_motor(1);
@@ -247,6 +234,7 @@ void floppy_check_int(uint32_t *st0, uint32_t *cyl) {
 }
 
 int floppy_seek(uint32_t cyl, uint32_t head) {
+  // printf("floppy_seek cyl=%d, head=%d\n", cyl, head);
   uint32_t st0, cyl0 = -1;
 
   if (cur_drive > 3)
@@ -258,7 +246,6 @@ int floppy_seek(uint32_t cyl, uint32_t head) {
     floppy_send_cmd(FLOPPY_CMD_SEEK);
     floppy_send_cmd((head) << 2 | cur_drive);
     floppy_send_cmd(cyl);
-
     floppy_wait_irq();
     floppy_check_int(&st0, &cyl0);
 
@@ -299,6 +286,7 @@ void floppy_reset() {
 }
 
 void floppy_control_motor(int on) {
+  // printf("floppy_control_motor on = `%d`\n", on);
   if (cur_drive > 3)
     return;
 
@@ -334,15 +322,12 @@ void floppy_lba_to_chs(int lba, int *head, int *track, int *sector) {
 
 int floppy_detect_drives() {
   outbyte(0x70, 0x10);
-  // sleep(100);
-  for(int i = 0; i < 1000; i++){};
   uint8_t drives = inbyte(0x71);
   int ndrives = 0;
 
-  printf(drive_types[drives >> 4]);
-  printf(drive_types[drives & 0xF]);
-
-  if (strcmp((uint8_t *) drive_types[drives >> 4], (uint8_t *) "1.44MB 3.5") == 0) {
+  if (strcmp((uint8_t *)drive_types[drives >> 4], (uint8_t *)"1.44MB 3.5") ==
+      0) {
+    println("Found a 1.44MB 3.5 floppy drive! - 0");
     dev_info[0].id = 4;
     dev_info[0].type = 0;
     strcpy(dev_info[0].mount, "fd");
@@ -356,7 +341,9 @@ int floppy_detect_drives() {
     ndrives++;
   }
 
-  if (strcmp((uint8_t *) drive_types[drives & 0xF], (uint8_t *) "1.44MB 3.5") == 0) {
+  if (strcmp((uint8_t *)drive_types[drives & 0xF], (uint8_t *)"1.44MB 3.5") ==
+      0) {
+    println("Found a 1.44MB 3.5 floppy drive! - 1");
     dev_info[1].id = 5;
     dev_info[1].type = 0;
     strcpy(dev_info[1].mount, "fd");
@@ -370,6 +357,22 @@ int floppy_detect_drives() {
     ndrives++;
   }
 
+  if (strcmp((uint8_t *)drive_types[drives >> 4], (uint8_t *)"2.88MB 3.5") ==
+      0) {
+    // println("Found a 2.88M floppy drive!");
+    dev_info[0].id = 6;
+    dev_info[0].type = 0;
+    strcpy(dev_info[0].mount, "fd");
+    dev_info[0].mount[2] = 'a';
+    dev_info[0].mount[3] = 0;
+    dev_info[0].read = &floppy_read_sector;
+    dev_info[0].write = &floppy_write_sector;
+    fat_init(&dev_info[0].fs);
+    device_register(&dev_info[0]);
+    cur_drive = 0;
+    ndrives++;
+  }
+
   return ndrives;
 }
 
@@ -377,4 +380,9 @@ void floppy_set_cur_drive(int drive) {
   if ((drive < 0) || (drive > 3))
     return;
   cur_drive = drive;
+}
+
+void floppy_handler_main() {
+  println("floppy_handler_main()");
+  floppy_irq_done = 1;
 }

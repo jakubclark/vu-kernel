@@ -93,4 +93,6 @@ extern void floppy_lba_to_chs(int lba, int *head, int *track, int *sector);
 extern int floppy_detect_drives();
 extern void floppy_set_cur_drive(int drive);
 
+extern void floppy_handler_main();
+
 #endif
