@@ -21,7 +21,7 @@ global load_gdt
 global enable_paging
 global load_page_directory
 global page_fault_main
-global floppy_handler
+global floppy_int
 
 extern kernel_main
 extern keyboard_handler_main
@@ -97,7 +97,7 @@ keyboard_handler:
     call keyboard_handler_main
     iretd
 
-floppy_handler:
+floppy_int:
     pushad
     inc byte [floppy_irq_done]
     mov al, 0x20

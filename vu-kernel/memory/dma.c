@@ -1,149 +1,70 @@
-#include "std/types.h"
 #include "memory/dma.h"
 #include "io/basicio.h"
+#include "std/types.h"
 
-void dma_set_address(uint8_t channel, uint8_t low, uint8_t high) {
-  if (channel > 8)
-    return;
+/* Defines for accessing the upper and lower byte of an integer. */
+#define LOW_BYTE(x) (x & 0x00FF)
+#define HI_BYTE(x) ((x & 0xFF00) >> 8)
 
-  uint16_t port = 0;
-  switch (channel) {
-  case 0:
-    port = DMA0_CHAN0_ADDR_REG;
-    break;
-  case 1:
-    port = DMA0_CHAN1_ADDR_REG;
-    break;
-  case 2:
-    port = DMA0_CHAN2_ADDR_REG;
-    break;
-  case 3:
-    port = DMA0_CHAN3_ADDR_REG;
-    break;
-  case 4:
-    port = DMA1_CHAN4_ADDR_REG;
-    break;
-  case 5:
-    port = DMA1_CHAN5_ADDR_REG;
-    break;
-  case 6:
-    port = DMA1_CHAN6_ADDR_REG;
-    break;
-  case 7:
-    port = DMA1_CHAN7_ADDR_REG;
-    break;
-  }
+/* Quick-access registers and ports for each DMA channel. */
+uint8_t MaskReg[8] = {0x0A, 0x0A, 0x0A, 0x0A, 0xD4, 0xD4, 0xD4, 0xD4};
+uint8_t ModeReg[8] = {0x0B, 0x0B, 0x0B, 0x0B, 0xD6, 0xD6, 0xD6, 0xD6};
+uint8_t ClearReg[8] = {0x0C, 0x0C, 0x0C, 0x0C, 0xD8, 0xD8, 0xD8, 0xD8};
 
-  outbyte(port, low);
-  outbyte(port, high);
-}
+uint8_t PagePort[8] = {0x87, 0x83, 0x81, 0x82, 0x8F, 0x8B, 0x89, 0x8A};
+uint8_t AddrPort[8] = {0x00, 0x02, 0x04, 0x06, 0xC0, 0xC4, 0xC8, 0xCC};
+uint8_t CountPort[8] = {0x01, 0x03, 0x05, 0x07, 0xC2, 0xC6, 0xCA, 0xCE};
 
-void dma_set_count(uint8_t channel, uint8_t low, uint8_t high) {
-  if (channel > 8)
-    return;
+void _dma_xfer(uint8_t DMA_channel, unsigned char page, unsigned int offset,
+               unsigned int length, uint8_t mode);
 
-  uint16_t port = 0;
-  switch (channel) {
-  case 0:
-    port = DMA0_CHAN0_COUNT_REG;
-    break;
-  case 1:
-    port = DMA0_CHAN1_COUNT_REG;
-    break;
-  case 2:
-    port = DMA0_CHAN2_COUNT_REG;
-    break;
-  case 3:
-    port = DMA0_CHAN3_COUNT_REG;
-    break;
-  case 4:
-    port = DMA1_CHAN4_COUNT_REG;
-    break;
-  case 5:
-    port = DMA1_CHAN5_COUNT_REG;
-    break;
-  case 6:
-    port = DMA1_CHAN6_COUNT_REG;
-    break;
-  case 7:
-    port = DMA1_CHAN7_COUNT_REG;
-    break;
-  }
+void dma_xfer(uint8_t channel, unsigned long address, unsigned int length,
+              unsigned char read) {
+  unsigned char page = 0, mode = 0;
+  unsigned int offset = 0;
 
-  outbyte(port, low);
-  outbyte(port, high);
-}
-
-void dma_set_external_page_register(uint8_t reg, uint8_t val) {
-  if (reg > 14)
-    return;
-
-  uint16_t port = 0;
-
-  switch (reg) {
-  case 1:
-    port = DMA_PAGE_CHAN1_ADDRBYTE2;
-    break;
-  case 2:
-    port = DMA_PAGE_CHAN2_ADDRBYTE2;
-    break;
-  case 3:
-    port = DMA_PAGE_CHAN3_ADDRBYTE2;
-    break;
-  case 4:
-    return;
-  case 5:
-    port = DMA_PAGE_CHAN5_ADDRBYTE2;
-    break;
-  case 6:
-    port = DMA_PAGE_CHAN6_ADDRBYTE2;
-    break;
-  case 7:
-    port = DMA_PAGE_CHAN7_ADDRBYTE2;
-    break;
-  }
-  outbyte(port, val);
-}
-
-void dma_set_mode(uint8_t channel, uint8_t mode) {
-  int dma = (channel < 4) ? 0 : 1;
-  int chan = (dma == 0) ? channel : channel - 4;
-
-  dma_mask_channel(channel);
-  outbyte((channel < 4) ? (DMA0_MODE_REG) : DMA1_MODE_REG, chan | (mode));
-  dma_unmask_all();
-}
-
-void dma_set_read(uint8_t channel) {
-  dma_set_mode(channel, DMA_MODE_READ_TRANSFER | DMA_MODE_TRANSFER_SINGLE);
-}
-
-void dma_set_write(uint8_t channel) {
-  dma_set_mode(channel, DMA_MODE_WRITE_TRANSFER | DMA_MODE_TRANSFER_SINGLE);
-}
-
-void dma_mask_channel(uint8_t channel) {
-  if (channel <= 4)
-    outbyte(DMA0_CHANMASK_REG, (1 << (channel - 1)));
+  if (read)
+    mode = 0x48 + channel;
   else
-    outbyte(DMA1_CHANMASK_REG, (1 << (channel - 5)));
+    mode = 0x44 + channel;
+
+  page = address >> 16;
+  offset = address & 0xFFFF;
+  length--;
+
+  _dma_xfer(channel, page, offset, length, mode);
 }
 
-void dma_unmask_channel(uint8_t channel) {
-  if (channel <= 4)
-    outbyte(DMA0_CHANMASK_REG, channel);
-  else
-    outbyte(DMA1_CHANMASK_REG, channel);
+void _dma_xfer(uint8_t DMA_channel, unsigned char page, unsigned int offset,
+               unsigned int length, uint8_t mode) {
+  /* Don't let anyone else mess up what we're doing. */
+  asm("cli");
+
+  /* Set up the DMA channel so we can use it.  This tells the DMA */
+  /* that we're going to be using this channel.  (It's masked) */
+  outbyte(MaskReg[DMA_channel], 0x04 | DMA_channel);
+
+  /* Clear any data transfers that are currently executing. */
+  outbyte(ClearReg[DMA_channel], 0x00);
+
+  /* Send the specified mode to the DMA. */
+  outbyte(ModeReg[DMA_channel], mode);
+
+  /* Send the offset address.  The first byte is the low base offset, the */
+  /* second byte is the high offset. */
+  outbyte(AddrPort[DMA_channel], LOW_BYTE(offset));
+  outbyte(AddrPort[DMA_channel], HI_BYTE(offset));
+
+  /* Send the physical page that the data lies on. */
+  outbyte(PagePort[DMA_channel], page);
+
+  /* Send the length of the data.  Again, low byte first. */
+  outbyte(CountPort[DMA_channel], LOW_BYTE(length));
+  outbyte(CountPort[DMA_channel], HI_BYTE(length));
+
+  /* Ok, we're done.  Enable the DMA channel (clear the mask). */
+  outbyte(MaskReg[DMA_channel], DMA_channel);
+
+  /* Re-enable interrupts before we leave. */
+  asm("sti");
 }
-
-void dma_reset_flipflop(int dma) {
-  if (dma > 1)
-    return;
-  outbyte((dma == 0) ? DMA0_CLEARBYTE_FLIPFLOP_REG
-                      : DMA1_CLEARBYTE_FLIPFLOP_REG,
-           0xFF);
-}
-
-void dma_reset() { outbyte(DMA0_TEMP_REG, 0xFF); }
-
-void dma_unmask_all() { outbyte(DMA1_UNMASK_ALL_REG, 0xFF); }

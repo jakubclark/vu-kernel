@@ -1,29 +1,12 @@
-/*
- *  Copyright 2016 Davide Pianca
- *
- *  Licensed under the Apache License, Version 2.0 (the "License");
- *  you may not use this file except in compliance with the License.
- *  You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
- */
-
-#include "fs/vfs.h"
-#include "std/types.h"
 #include "device.h"
-#include "io/scrn.h"
-#include "memory/physmem.h"
-#include "std/string.h"
-#include "memory/memutil.h"
-
-#include "io/basicio.h"
 #include "fs/fat.h"
+#include "fs/vfs.h"
+#include "io/basicio.h"
+#include "io/scrn.h"
+#include "memory/memutil.h"
+#include "memory/physmem.h"
+#include "std/types.h"
+#include "std/string.h"
 
 static filesystem *devs[MAX_DEVICES];
 

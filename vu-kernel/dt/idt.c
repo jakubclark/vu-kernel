@@ -9,10 +9,7 @@ idt_entry_t IDT[IDT_SIZE];
 idt_ptr_t idtptr;
 
 void idt_init(void) {
-  // Install Keyboard Handler
-  install_ir(0x21, INTERRUPT_GATE, KERNEL_CODE_SEGMENT_OFFSET,
-             keyboard_handler);
-
+  // Remap PIC
   outbyte(0x20, 0x11);
   outbyte(0xA0, 0x11);
 
@@ -28,16 +25,19 @@ void idt_init(void) {
   outbyte(0x21, 0xff);
   outbyte(0xA1, 0xff);
 
-  // Install Page Fault Handler
-  install_ir(0XE, INTERRUPT_GATE, KERNEL_CODE_SEGMENT_OFFSET,
-             page_fault_main);
-
   idtptr.limit = sizeof(IDT);
   idtptr.base = (unsigned long)IDT;
 
+  // Install Keyboard Handler
+  install_ir(0x21, INTERRUPT_GATE, KERNEL_CODE_SEGMENT_OFFSET,
+             keyboard_handler);
+
+  // Install Page Fault Handler
+  install_ir(0XE, INTERRUPT_GATE, KERNEL_CODE_SEGMENT_OFFSET, page_fault_main);
+
   // Install Floppy Handler
-  install_ir(0x26, INTERRUPT_GATE, KERNEL_CODE_SEGMENT_OFFSET,
-             floppy_handler);
+  install_ir(0x26, INTERRUPT_GATE, KERNEL_CODE_SEGMENT_OFFSET, floppy_int);
+
   load_idt();
 }
 
