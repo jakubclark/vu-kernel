@@ -117,9 +117,9 @@ void floppy_read_sector_imp(uint8_t head, uint8_t track, uint8_t sector) {
 }
 
 char *floppy_read_sector(int lba) {
+  printf("floppy_read_sector() | lba=%d\n", lba);
   if (cur_drive > 3)
     return (char *)-1;
-  // printf("floppy_read_sector. lba=%d\n", lba);
   int head = 0, track = 0, sector = 1;
   floppy_lba_to_chs(lba, &head, &track, &sector);
   floppy_control_motor(1);
@@ -212,7 +212,7 @@ int floppy_calibrate(uint32_t drive) {
     floppy_check_int(&st0, &cyl);
 
     if (st0 & 0xC0) {
-      printf("floppy_calibrate: status = %s\n", status[st0 >> 6]);
+      printf("floppy_calibrate() | status = %s\n", status[st0 >> 6]);
       continue;
     }
 
@@ -234,7 +234,7 @@ void floppy_check_int(uint32_t *st0, uint32_t *cyl) {
 }
 
 int floppy_seek(uint32_t cyl, uint32_t head) {
-  // printf("floppy_seek cyl=%d, head=%d\n", cyl, head);
+  printf("floppy_seek() cyl=%d, head=%d\n", cyl, head);
   uint32_t st0, cyl0 = -1;
 
   if (cur_drive > 3)
@@ -286,7 +286,7 @@ void floppy_reset() {
 }
 
 void floppy_control_motor(int on) {
-  // printf("floppy_control_motor on = `%d`\n", on);
+  printf("floppy_control_motor() | on = `%d`\n", on);
   if (cur_drive > 3)
     return;
 
@@ -327,7 +327,7 @@ int floppy_detect_drives() {
 
   if (strcmp((uint8_t *)drive_types[drives >> 4], (uint8_t *)"1.44MB 3.5") ==
       0) {
-    println("Found a 1.44MB 3.5 floppy drive! - 0");
+    println("Found a 1.44MB 3.5 floppy drive - 0");
     dev_info[0].id = 4;
     dev_info[0].type = 0;
     strcpy(dev_info[0].mount, "fd");
@@ -343,7 +343,7 @@ int floppy_detect_drives() {
 
   if (strcmp((uint8_t *)drive_types[drives & 0xF], (uint8_t *)"1.44MB 3.5") ==
       0) {
-    println("Found a 1.44MB 3.5 floppy drive! - 1");
+    println("Found a 1.44MB 3.5 floppy drive - 1");
     dev_info[1].id = 5;
     dev_info[1].type = 0;
     strcpy(dev_info[1].mount, "fd");
@@ -359,7 +359,7 @@ int floppy_detect_drives() {
 
   if (strcmp((uint8_t *)drive_types[drives >> 4], (uint8_t *)"2.88MB 3.5") ==
       0) {
-    // println("Found a 2.88M floppy drive!");
+    println("Found a 2.88M floppy drive - 0");
     dev_info[0].id = 6;
     dev_info[0].type = 0;
     strcpy(dev_info[0].mount, "fd");

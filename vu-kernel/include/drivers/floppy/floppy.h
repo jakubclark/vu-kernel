@@ -3,6 +3,8 @@
 
 #include "std/types.h"
 
+extern void floppy_handler();
+
 enum floppy_io {
   FLOPPY_DOR = 0x3F2,
   FLOPPY_MSR = 0x3F4,

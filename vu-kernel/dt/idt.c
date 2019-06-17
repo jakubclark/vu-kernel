@@ -3,16 +3,15 @@
 #include "io/keyboard.h"
 #include "memory/paging.h"
 #include "std/types.h"
+#include "drivers/floppy/floppy.h"
 
 idt_entry_t IDT[IDT_SIZE];
 idt_ptr_t idtptr;
 
-extern void floppy_int();
-
 void idt_init(void) {
   // Install Keyboard Handler
   install_ir(0x21, INTERRUPT_GATE, KERNEL_CODE_SEGMENT_OFFSET,
-             (void *)keyboard_handler);
+             keyboard_handler);
 
   outbyte(0x20, 0x11);
   outbyte(0xA0, 0x11);
@@ -31,14 +30,14 @@ void idt_init(void) {
 
   // Install Page Fault Handler
   install_ir(0XE, INTERRUPT_GATE, KERNEL_CODE_SEGMENT_OFFSET,
-             (void *)page_fault_main);
+             page_fault_main);
 
   idtptr.limit = sizeof(IDT);
   idtptr.base = (unsigned long)IDT;
 
   // Install Floppy Handler
   install_ir(0x26, INTERRUPT_GATE, KERNEL_CODE_SEGMENT_OFFSET,
-             (void *)floppy_int);
+             floppy_handler);
   load_idt();
 }
 

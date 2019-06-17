@@ -33,6 +33,7 @@ int offset;
 
 void fat_mount(device_t *dev) {
   // Trying with bootsector
+  printf("fat_mount() dev->mount=%s\n", dev->mount);
   bootsector_t *bs = (bootsector_t *)dev->read(0);
   if ((bs->ignore[0] != 0xEB) || (bs->ignore[2] != 0x90)) // Not a FAT fs
     return;

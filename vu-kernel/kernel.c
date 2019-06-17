@@ -72,6 +72,7 @@ void init(uint32_t magic, multiboot_info_t *mbi) {
   vfs_init();
   println("| VFS Done\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t  |");
 
+  floppy_dma_init();
   floppy_init();
   println("| FLP Done\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t  |");
 
