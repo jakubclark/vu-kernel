@@ -49,8 +49,8 @@ void ata_read_sector(uint32_t sector, uint8_t *buffer) {
   while (!(inbyte(0x1F7) & 0x08))
     ;
 
-  for (int idx = 0; idx < 256; idx++)
-    *(uint32_t *)(buffer + idx * 4) = inword(0x1F0);
+  for (uint16_t i = 0; i < 256; i++)
+    *(uint32_t *)(buffer + i * 4) = inword(0x1F0);
 }
 
 uint32_t ata_write_sector(uint32_t sector, uint8_t *buffer) {
@@ -59,8 +59,8 @@ uint32_t ata_write_sector(uint32_t sector, uint8_t *buffer) {
   while (!(inbyte(0x1F7) & 0x08))
     ;
 
-  for (int idx = 0; idx < 256; idx++)
-    outword(0x1F0, buffer[8 + idx * 2] | (buffer[8 + idx * 2 + 1] << 8));
+  for (uint16_t i = 0; i < 256; i++)
+    outword(0x1F0, buffer[8 + i * 2] | (buffer[8 + i * 2 + 1] << 8));
   return 1;
 }
 
@@ -69,7 +69,7 @@ void print_sector(uint32_t sector) {
 
   ata_read_sector(sector, buff);
 
-  for (int i = 0; i < SECTOR_SIZE / 2; i++) {
+  for (uint16_t i = 0; i < SECTOR_SIZE / 2; i++) {
     if (buff[i] < 0x10)
       printf("0%x", buff[i]);
     else
@@ -77,6 +77,5 @@ void print_sector(uint32_t sector) {
     if ((i % 2) != 0)
       putchar(' ');
   }
-  println("");
   kfree((uint32_t)buff);
 }
