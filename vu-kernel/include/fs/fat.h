@@ -10,7 +10,8 @@
 #define FAT32 2
 #define EXFAT 3
 
-// 33 bytes
+#define SECTOR_SIZE 512
+
 typedef struct {
   uint8_t oem_name[8];
   uint16_t sector_bytes;

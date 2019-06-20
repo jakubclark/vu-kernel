@@ -30,7 +30,6 @@ OBJS := \
 	$(KERNEL_DIR)/io/keyboard.o \
 	$(KERNEL_DIR)/io/scrn.o \
 	\
-	$(KERNEL_DIR)/memory/dma.o \
 	$(KERNEL_DIR)/memory/memutil.o \
 	$(KERNEL_DIR)/memory/physmem.o \
 	$(KERNEL_DIR)/memory/paging.o \

@@ -58,17 +58,20 @@ extern void ata_int();
 /* Intialize ATA driver. Mounts the HDD */
 extern void init_ata();
 
-/* Prepare to read sector number `addr` */
-extern void read_sector(uint32_t addr);
+/* Prepare to read sector number `sector` */
+extern void read_sector(uint32_t sector);
 
-/* Prepare to write to sector number `addr` */
-extern void write_sector(uint32_t addr);
+/* Prepare to write to sector number `sector` */
+extern void write_sector(uint32_t sector);
 
-/* Read sector number `addr` and store the results into `buffer`.
+/* Read sector number `sector` and store the results into `buffer`.
  * The buffer itself is returned */
-extern void ata_read_sector(uint32_t addr, uint8_t *buffer);
+extern void ata_read_sector(uint32_t sector, uint8_t *buffer);
 
-/* Write the contents of the buffer `buffer` at sector number `addr` */
-extern uint32_t ata_write_sector(uint32_t addr, uint8_t *buffer);
+/* Write the contents of the buffer `buffer` at sector number `sector` */
+extern uint32_t ata_write_sector(uint32_t sector, uint8_t *buffer);
+
+/* Print sector number `sector` */
+extern void print_sector(uint32_t sector);
 
 #endif

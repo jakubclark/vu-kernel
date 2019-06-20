@@ -1,6 +1,8 @@
+#include "chell/commands/ata_cmd.h"
 #include "chell/commands/colors_cmd.h"
 #include "chell/commands/memtest_cmd.h"
 #include "chell/commands/multiboot_cmd.h"
+#include "drivers/pci/pci.h"
 #include "io/keyboard.h"
 #include "io/scrn.h"
 #include "memory/memutil.h"
@@ -10,7 +12,6 @@
 #include "std/colors.h"
 #include "std/string.h"
 #include "std/types.h"
-#include "drivers/pci/pci.h"
 
 uint8_t IN_SHELL = 0;
 
@@ -42,7 +43,9 @@ void print_logo() { puts_col(chell_logo, RED, DEFAULTBACKGROUND); }
 /* Prints the `help` command */
 void print_help() {
   println("Available commands:");
-  puts_col((uint8_t *)"'help', 'clear', 'colors', 'logo', 'multiboot', 'mem'",
+  puts_col((uint8_t *)"\thelp \t|\t clear     \t|\t colors\n"
+                      "\tlogo \t|\t multiboot \t|\t mem\n"
+                      "\tata  \t|\t pci",
            BROWN, DEFAULTBACKGROUND);
 }
 
@@ -50,20 +53,20 @@ void print_help() {
 void print_welcome() {
   // print_logo();
 
-  // for (uint8_t i = 0; i < 80; i++)
-  //   putcharCol('-', DEFAULTBACKGROUND << 4 | DEFAULTFOREGROUND);
+  for (uint8_t i = 0; i < 80; i++)
+    putcharCol('-', DEFAULTBACKGROUND << 4 | DEFAULTFOREGROUND);
 
-  // puts_col((uint8_t *)"Welcome to ", DEFAULTFOREGROUND, DEFAULTBACKGROUND);
-  // puts_col((uint8_t *)"Chell", RED, DEFAULTBACKGROUND);
-  // puts_col((uint8_t *)", a barebones shell!\n", DEFAULTFOREGROUND,
-  //          DEFAULTBACKGROUND);
-  // puts_col((uint8_t *)"help", BROWN, DEFAULTBACKGROUND);
-  // puts_col((uint8_t *)": list available commands\n", DEFAULTFOREGROUND,
-  //          DEFAULTBACKGROUND);
+  puts_col((uint8_t *)"Welcome to ", DEFAULTFOREGROUND, DEFAULTBACKGROUND);
+  puts_col((uint8_t *)"Chell", RED, DEFAULTBACKGROUND);
+  puts_col((uint8_t *)", a barebones shell!\n", DEFAULTFOREGROUND,
+           DEFAULTBACKGROUND);
+  puts_col((uint8_t *)"help", BROWN, DEFAULTBACKGROUND);
+  puts_col((uint8_t *)": list available commands\n", DEFAULTFOREGROUND,
+           DEFAULTBACKGROUND);
 
-  // for (uint8_t i = 0; i < 80; i++) {
-  //   putchar('-');
-  // }
+  for (uint8_t i = 0; i < 80; i++) {
+    putchar('-');
+  }
   print_prompt();
 }
 
@@ -112,8 +115,13 @@ void chell_main() {
         goto cmd_end;
       }
 
-      if(strcmp(cmd_buffer, (uint8_t *)"pci") == 0){
+      if (strcmp(cmd_buffer, (uint8_t *)"pci") == 0) {
         pci_enum_buses();
+        goto cmd_end;
+      }
+
+      if (strcmp(cmd_buffer, (uint8_t *)"ata") == 0) {
+        ata_cmd_main();
         goto cmd_end;
       }
 

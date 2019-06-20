@@ -7,14 +7,6 @@
 #include "std/string.h"
 #include "std/types.h"
 
-#define SECTOR_SIZE 512
-
-uint32_t *dma_buffer = (uint32_t *)0x200000;
-
-uint8_t FAT[SECTOR_SIZE * 2];
-
-int offset;
-
 void fat_mount(device_t *dev) {
   bootsector_t *bs = (bootsector_t *)kmalloc(sizeof(bootsector_t));
 

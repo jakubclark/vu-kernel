@@ -10,48 +10,27 @@
 static device_t ata_dev_info;
 uint8_t ata_irq_done = 0;
 
-void write_sector(uint32_t addr) {
+void write_sector(uint32_t sector) {
   outbyte(0x1F1, 0x00);
   outbyte(0x1F2, 0x01);
-  outbyte(0x1F3, (uint8_t)addr);
-  outbyte(0x1F4, (uint8_t)(addr >> 8));
-  outbyte(0x1F5, (uint8_t)(addr >> 16));
-  outbyte(0x1F6, 0xE0 | (drive << 4) | ((addr >> 24) & 0x0F));
+  outbyte(0x1F3, (uint8_t)sector);
+  outbyte(0x1F4, (uint8_t)(sector >> 8));
+  outbyte(0x1F5, (uint8_t)(sector >> 16));
+  outbyte(0x1F6, 0xE0 | (drive << 4) | ((sector >> 24) & 0x0F));
   outbyte(0x1F7, 0x30);
 }
 
-void read_sector(uint32_t addr) {
+void read_sector(uint32_t sector) {
   outbyte(0x1F1, 0x00);
   outbyte(0x1F2, 0x01);
-  outbyte(0x1F3, (uint8_t)addr);
-  outbyte(0x1F4, (uint8_t)(addr >> 8));
-  outbyte(0x1F5, (uint8_t)(addr >> 16));
-  outbyte(0x1F6, 0xE0 | (drive << 4) | ((addr >> 24) & 0x0F));
+  outbyte(0x1F3, (uint8_t)sector);
+  outbyte(0x1F4, (uint8_t)(sector >> 8));
+  outbyte(0x1F5, (uint8_t)(sector >> 16));
+  outbyte(0x1F6, 0xE0 | (drive << 4) | ((sector >> 24) & 0x0F));
   outbyte(0x1F7, 0x20);
 }
 
 void init_ata() {
-  // Show the first sector
-  uint8_t *buff = (uint8_t *)kmalloc(512);
-
-  ata_read_sector(0, buff);
-
-  for (int i = 0; i < 100; i += 2) {
-    if (buff[i] < 0x10)
-      printf("0%x", buff[i]);
-    else
-      printf("%x", buff[i]);
-
-    if (buff[i + 1] < 0x10)
-      printf("0%x ", buff[i + 1]);
-    else
-      printf("%x ", buff[i + 1]);
-
-    if (((i + 2) % 16) == 0 && i != 0)
-      println("");
-  }
-  println("");
-
   // Mount the drive
   ata_dev_info.id = 0;
   ata_dev_info.type = 1;
@@ -68,9 +47,9 @@ void init_ata() {
   drive = 0;
 }
 
-void ata_read_sector(uint32_t addr, uint8_t *buffer) {
+void ata_read_sector(uint32_t sector, uint8_t *buffer) {
   uint32_t tmpword;
-  read_sector(addr);
+  read_sector(sector);
 
   while (!(inbyte(0x1F7) & 0x08))
     ;
@@ -84,11 +63,11 @@ void ata_read_sector(uint32_t addr, uint8_t *buffer) {
   }
 }
 
-uint32_t ata_write_sector(uint32_t addr, uint8_t *buffer) {
+uint32_t ata_write_sector(uint32_t sector, uint8_t *buffer) {
   uint8_t tmpword;
   uint32_t idx;
 
-  write_sector(addr);
+  write_sector(sector);
 
   while (!(inbyte(0x1F7) & 0x08))
     ;
@@ -98,4 +77,26 @@ uint32_t ata_write_sector(uint32_t addr, uint8_t *buffer) {
     outword(0x1F0, tmpword);
   }
   return 1;
+}
+
+void print_sector(uint32_t sector) {
+  uint8_t *buff = (uint8_t *)kmalloc(SECTOR_SIZE);
+
+  ata_read_sector(sector, buff);
+
+  for (int i = 0; i < 100; i += 2) {
+    if (buff[i] < 0x10)
+      printf("0%x", buff[i]);
+    else
+      printf("%x", buff[i]);
+
+    if (buff[i + 1] < 0x10)
+      printf("0%x ", buff[i + 1]);
+    else
+      printf("%x ", buff[i + 1]);
+
+    if (((i + 2) % 16) == 0 && i != 0)
+      println("");
+  }
+  println("");
 }
