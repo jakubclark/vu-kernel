@@ -1,11 +1,11 @@
-#include "std/types.h"
-#include "fs/fat.h"
 #include "device.h"
+#include "fs/fat.h"
 #include "fs/mbr.h"
-#include "memory/memutil.h"
-#include "std/string.h"
-#include "memory/physmem.h"
 #include "io/scrn.h"
+#include "memory/memutil.h"
+#include "memory/physmem.h"
+#include "std/string.h"
+#include "std/types.h"
 
 #define SECTOR_SIZE 512
 
@@ -65,7 +65,8 @@ void fat_mount(device_t *dev) {
     dev->minfo.type = FAT32;
   else
     dev->minfo.type = EXFAT;
-  printf("total_clusters=%d | minfo.type=%d\n", total_clusters, dev->minfo.type);
+  printf("total_clusters=%d | minfo.type=%d\n", total_clusters,
+         dev->minfo.type);
 }
 
 void to_dos_file_name(char *name, char *str) {

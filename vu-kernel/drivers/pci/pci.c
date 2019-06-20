@@ -1,7 +1,7 @@
-#include "std/types.h"
 #include "drivers/pci/pci.h"
 #include "io/basicio.h"
 #include "io/scrn.h"
+#include "std/types.h"
 
 const char *classNames[] = {
     "Unknown",
@@ -52,8 +52,8 @@ void pci_check_slot(uint8_t bus, uint8_t slot) {
     if (class == 0)
       continue;
 
-    printf("PCI device %d:%d:%d | vendor=0x%x | device=0x%x | class=%s\n",
-           bus, slot, function, device_vendor & 0xFFFF, device_vendor >> 16,
+    printf("PCI device %d:%d:%d | vendor=0x%x | device=0x%x | class=%s\n", bus,
+           slot, function, device_vendor & 0xFFFF, device_vendor >> 16,
            classNames[class]);
   }
 }

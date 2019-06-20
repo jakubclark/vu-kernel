@@ -48,22 +48,22 @@ void print_help() {
 
 /* Prints a welcome screen, to chell! */
 void print_welcome() {
-  print_logo();
+  // print_logo();
 
-  for (uint8_t i = 0; i < 80; i++)
-    putcharCol('-', DEFAULTBACKGROUND << 4 | DEFAULTFOREGROUND);
+  // for (uint8_t i = 0; i < 80; i++)
+  //   putcharCol('-', DEFAULTBACKGROUND << 4 | DEFAULTFOREGROUND);
 
-  puts_col((uint8_t *)"Welcome to ", DEFAULTFOREGROUND, DEFAULTBACKGROUND);
-  puts_col((uint8_t *)"Chell", RED, DEFAULTBACKGROUND);
-  puts_col((uint8_t *)", a barebones shell!\n", DEFAULTFOREGROUND,
-           DEFAULTBACKGROUND);
-  puts_col((uint8_t *)"help", BROWN, DEFAULTBACKGROUND);
-  puts_col((uint8_t *)": list available commands\n", DEFAULTFOREGROUND,
-           DEFAULTBACKGROUND);
+  // puts_col((uint8_t *)"Welcome to ", DEFAULTFOREGROUND, DEFAULTBACKGROUND);
+  // puts_col((uint8_t *)"Chell", RED, DEFAULTBACKGROUND);
+  // puts_col((uint8_t *)", a barebones shell!\n", DEFAULTFOREGROUND,
+  //          DEFAULTBACKGROUND);
+  // puts_col((uint8_t *)"help", BROWN, DEFAULTBACKGROUND);
+  // puts_col((uint8_t *)": list available commands\n", DEFAULTFOREGROUND,
+  //          DEFAULTBACKGROUND);
 
-  for (uint8_t i = 0; i < 80; i++) {
-    putchar('-');
-  }
+  // for (uint8_t i = 0; i < 80; i++) {
+  //   putchar('-');
+  // }
   print_prompt();
 }
 

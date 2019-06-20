@@ -145,7 +145,6 @@ int vfs_get_dev(char *name) {
 }
 
 void vfs_mount(char *name) {
-  printf("vfs_mount() %s\n", name);
   device_t *dev = get_dev_by_name(name);
   if (&dev->fs) {
     devs[dev->id] = &dev->fs;
