@@ -8,6 +8,7 @@
 #include "std/types.h"
 
 static device_t ata_dev_info;
+uint8_t ata_irq_done = 0;
 
 void write_sector(uint32_t addr) {
   outbyte(0x1F1, 0x00);
@@ -51,7 +52,7 @@ void init_ata() {
   }
   println("");
 
-  // Just mount the drive
+  // Mount the drive
   ata_dev_info.id = 0;
   ata_dev_info.type = 1;
   ata_dev_info.mount[0] = 'h';
@@ -60,17 +61,20 @@ void init_ata() {
   ata_dev_info.mount[3] = 0;
   ata_dev_info.read = &ata_read_sector;
   ata_dev_info.write = &ata_write_sector;
+
   fat_init(&ata_dev_info.fs);
   device_register(&ata_dev_info);
+
   drive = 0;
-  return;
 }
 
 void ata_read_sector(uint32_t addr, uint8_t *buffer) {
   uint32_t tmpword;
   read_sector(addr);
-  while (!(inbyte(0x1F7) & 0x08)) {
-  }
+
+  while (!(inbyte(0x1F7) & 0x08))
+    ;
+
   for (int idx = 0; idx < 256; idx += 4) {
     tmpword = inword(0x1F0);
     buffer[idx] = (uint8_t)tmpword;
@@ -83,9 +87,12 @@ void ata_read_sector(uint32_t addr, uint8_t *buffer) {
 uint32_t ata_write_sector(uint32_t addr, uint8_t *buffer) {
   uint8_t tmpword;
   uint32_t idx;
+
   write_sector(addr);
-  while (!(inbyte(0x1F7) & 0x08)) {
-  }
+
+  while (!(inbyte(0x1F7) & 0x08))
+    ;
+
   for (idx = 0; idx < 256; idx++) {
     tmpword = buffer[8 + idx * 2] | (buffer[8 + idx * 2 + 1] << 8);
     outword(0x1F0, tmpword);

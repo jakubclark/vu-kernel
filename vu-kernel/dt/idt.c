@@ -35,11 +35,9 @@ void idt_init(void) {
   // Install Page Fault Handler
   install_ir(0XE, INTERRUPT_GATE, KERNEL_CODE_SEGMENT_OFFSET, page_fault_main);
 
-  // // Install Floppy Handler
-  // install_ir(0x26, INTERRUPT_GATE, KERNEL_CODE_SEGMENT_OFFSET, floppy_int);
-
   // Install ATA Handler
-  // install_ir()
+  install_ir(46, INTERRUPT_GATE, KERNEL_CODE_SEGMENT_OFFSET, ata_int);
+  install_ir(47, INTERRUPT_GATE, KERNEL_CODE_SEGMENT_OFFSET, ata_int);
 
   load_idt();
 }

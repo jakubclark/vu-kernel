@@ -19,11 +19,8 @@ void fat_mount(device_t *dev) {
   bootsector_t *bs = (bootsector_t *)kmalloc(sizeof(bootsector_t));
 
   dev->read(0, (uint8_t *)bs);
-  if ((bs->ignore[0] != 0xEB) || (bs->ignore[2] != 0x90)) {
-    println("Not a FAT filesystem...");
+  if ((bs->ignore[0] != 0xEB) || (bs->ignore[2] != 0x90))
     return;
-  }
-  println("This is a FAT filesystem!");
 
   mbr_t *mbr = (mbr_t *)bs;
   for (int i = 0; i < 4; i++) {
@@ -65,8 +62,6 @@ void fat_mount(device_t *dev) {
     dev->minfo.type = FAT32;
   else
     dev->minfo.type = EXFAT;
-  printf("total_clusters=%d | minfo.type=%d\n", total_clusters,
-         dev->minfo.type);
 }
 
 void to_dos_file_name(char *name, char *str) {
