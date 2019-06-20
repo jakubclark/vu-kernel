@@ -13,9 +13,10 @@ OBJS := \
 	$(KERNEL_DIR)/device.o \
 	\
 	$(KERNEL_DIR)/chell/chell.o \
+	$(KERNEL_DIR)/chell/commands/ata_cmd.o \
 	$(KERNEL_DIR)/chell/commands/colors_cmd.o \
-	$(KERNEL_DIR)/chell/commands/multiboot_cmd.o \
 	$(KERNEL_DIR)/chell/commands/memtest_cmd.o \
+	$(KERNEL_DIR)/chell/commands/multiboot_cmd.o \
 	\
 	$(KERNEL_DIR)/fs/vfs.o \
 	$(KERNEL_DIR)/fs/fat.o \

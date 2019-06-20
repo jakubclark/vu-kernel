@@ -7,27 +7,23 @@
 #include "memory/physmem.h"
 #include "std/types.h"
 
-static device_t ata_dev_info;
+device_t ata_dev_info;
+
+/* Used in the IRQ Handler */
 uint8_t ata_irq_done = 0;
 
-void write_sector(uint32_t sector) {
+/* Prepare the drive to reador write */
+void prepare_drive(uint32_t sector, uint32_t write) {
   outbyte(0x1F1, 0x00);
   outbyte(0x1F2, 0x01);
   outbyte(0x1F3, (uint8_t)sector);
   outbyte(0x1F4, (uint8_t)(sector >> 8));
   outbyte(0x1F5, (uint8_t)(sector >> 16));
   outbyte(0x1F6, 0xE0 | (drive << 4) | ((sector >> 24) & 0x0F));
-  outbyte(0x1F7, 0x30);
-}
-
-void read_sector(uint32_t sector) {
-  outbyte(0x1F1, 0x00);
-  outbyte(0x1F2, 0x01);
-  outbyte(0x1F3, (uint8_t)sector);
-  outbyte(0x1F4, (uint8_t)(sector >> 8));
-  outbyte(0x1F5, (uint8_t)(sector >> 16));
-  outbyte(0x1F6, 0xE0 | (drive << 4) | ((sector >> 24) & 0x0F));
-  outbyte(0x1F7, 0x20);
+  if (write)
+    outbyte(0x1F7, 0x30);
+  else
+    outbyte(0x1F7, 0x20);
 }
 
 void init_ata() {
@@ -48,34 +44,23 @@ void init_ata() {
 }
 
 void ata_read_sector(uint32_t sector, uint8_t *buffer) {
-  uint32_t tmpword;
-  read_sector(sector);
+  prepare_drive(sector, 0);
 
   while (!(inbyte(0x1F7) & 0x08))
     ;
 
-  for (int idx = 0; idx < 256; idx += 4) {
-    tmpword = inword(0x1F0);
-    buffer[idx] = (uint8_t)tmpword;
-    buffer[idx + 1] = (uint8_t)(tmpword >> 8);
-    buffer[idx + 2] = (uint8_t)(tmpword >> 16);
-    buffer[idx + 3] = (uint8_t)(tmpword >> 24);
-  }
+  for (int idx = 0; idx < 256; idx++)
+    *(uint32_t *)(buffer + idx * 4) = inword(0x1F0);
 }
 
 uint32_t ata_write_sector(uint32_t sector, uint8_t *buffer) {
-  uint8_t tmpword;
-  uint32_t idx;
-
-  write_sector(sector);
+  prepare_drive(sector, 1);
 
   while (!(inbyte(0x1F7) & 0x08))
     ;
 
-  for (idx = 0; idx < 256; idx++) {
-    tmpword = buffer[8 + idx * 2] | (buffer[8 + idx * 2 + 1] << 8);
-    outword(0x1F0, tmpword);
-  }
+  for (int idx = 0; idx < 256; idx++)
+    outword(0x1F0, buffer[8 + idx * 2] | (buffer[8 + idx * 2 + 1] << 8));
   return 1;
 }
 
@@ -84,19 +69,14 @@ void print_sector(uint32_t sector) {
 
   ata_read_sector(sector, buff);
 
-  for (int i = 0; i < 100; i += 2) {
+  for (int i = 0; i < SECTOR_SIZE / 2; i++) {
     if (buff[i] < 0x10)
       printf("0%x", buff[i]);
     else
       printf("%x", buff[i]);
-
-    if (buff[i + 1] < 0x10)
-      printf("0%x ", buff[i + 1]);
-    else
-      printf("%x ", buff[i + 1]);
-
-    if (((i + 2) % 16) == 0 && i != 0)
-      println("");
+    if ((i % 2) != 0)
+      putchar(' ');
   }
   println("");
+  kfree((uint32_t)buff);
 }
