@@ -1,3 +1,4 @@
+#include "chell/commands/memtest_cmd.h"
 #include "io/keyboard.h"
 #include "io/scrn.h"
 #include "memory/memutil.h"
@@ -16,20 +17,44 @@ void assert(int b) {
   if (b)
     return;
 
-  PANIC((uint8_t *) "Failed to assert");
+  PANIC((uint8_t *)"Failed to assert");
 }
 
 void assert_page_contents(char *p, char c, uint32_t j) {
   for (uint32_t i = 0; i < PAGE_SIZE; i++) {
     if (p[i] != c) {
-      printf("Expected to find `%d`, found `%d` instead. page[%d], char[%d]\n", c,
-             p[i], j, i);
-      PANIC((uint8_t *) "Failed to assert_page_contents");
+      printf("Expected to find `%d`, found `%d` instead. page[%d], char[%d]\n",
+             c, p[i], j, i);
+      PANIC((uint8_t *)"Failed to assert_page_contents");
     }
   }
 }
 
 void init_mem(uint32_t sz) { memsize = sz; }
+
+void mem_cmd_main() {
+  uint32_t free_pages_before = count_free_pages();
+
+  println("Starting easy tests...");
+  test_alloc_easy(0);
+  println("Finished easy tests!\n");
+
+  println("Starting hard tests...");
+  test_alloc_advanced(0);
+  println("Finished hard tests!\n");
+
+  println("Starting OOM  tests...");
+  test_alloc_oom(1);
+  println("Finished OOM  tests!\n");
+
+  printf("All tests passed!\n\n");
+
+  uint32_t free_pages_after = count_free_pages();
+  printf("free_pages_before=%d, free_pages_after=%d, lost %d pages in "
+         "the process...",
+         free_pages_before, free_pages_after,
+         free_pages_before - free_pages_after);
+}
 
 void test_alloc_easy(uint32_t verbose) {
   uint32_t npages = memsize / PAGE_SIZE;

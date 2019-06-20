@@ -30,7 +30,7 @@ $(ISO_FILE): kernel
 	$(GRUB_MKRESCUE) -o $(ISO_FILE) iso
 
 qemu: iso
-	qemu-system-i386 -cdrom $(ISO_FILE) -monitor stdio -m $(MEM)
+	qemu-system-i386 -hda hdd.img -cdrom $(ISO_FILE) -monitor stdio -m $(MEM) -boot d
 
 clean:
 	make -C vu-kernel clean

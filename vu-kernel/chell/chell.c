@@ -1,6 +1,9 @@
+#include "chell/commands/ata_cmd.h"
 #include "chell/commands/colors_cmd.h"
 #include "chell/commands/memtest_cmd.h"
 #include "chell/commands/multiboot_cmd.h"
+#include "chell/commands/vfs_cmd.h"
+#include "drivers/pci/pci.h"
 #include "io/keyboard.h"
 #include "io/scrn.h"
 #include "memory/memutil.h"
@@ -41,13 +44,15 @@ void print_logo() { puts_col(chell_logo, RED, DEFAULTBACKGROUND); }
 /* Prints the `help` command */
 void print_help() {
   println("Available commands:");
-  puts_col((uint8_t *)"'help', 'clear', 'colors', 'logo', 'multiboot', 'mem'",
+  puts_col((uint8_t *)"\thelp \t|\t clear     \t|\t colors\n"
+                      "\tlogo \t|\t multiboot \t|\t mem\n"
+                      "\tata  \t|\t pci",
            BROWN, DEFAULTBACKGROUND);
 }
 
 /* Prints a welcome screen, to chell! */
 void print_welcome() {
-  print_logo();
+  // print_logo();
 
   for (uint8_t i = 0; i < 80; i++)
     putcharCol('-', DEFAULTBACKGROUND << 4 | DEFAULTFOREGROUND);
@@ -111,29 +116,28 @@ void chell_main() {
         goto cmd_end;
       }
 
+      if (strcmp(cmd_buffer, (uint8_t *)"pci") == 0) {
+        pci_enum_buses();
+        goto cmd_end;
+      }
+
+      if (strcmp(cmd_buffer, (uint8_t *)"ata") == 0) {
+        ata_cmd_main();
+        goto cmd_end;
+      }
+
+      if (strcmp(cmd_buffer, (uint8_t *)"vfs") == 0) {
+        vfs_cmd_main();
+        goto cmd_end;
+      }
+
+      if (strcmp(cmd_buffer, (uint8_t *)"ls") == 0) {
+        vfs_cmd_ls();
+        goto cmd_end;
+      }
+
       if (strcmp(cmd_buffer, (uint8_t *)"mem") == 0) {
-        uint32_t free_pages_before = count_free_pages();
-
-        println("Starting easy tests...");
-        test_alloc_easy(0);
-        println("Finished easy tests!\n");
-
-        println("Starting hard tests...");
-        test_alloc_advanced(0);
-        println("Finished hard tests!\n");
-
-        println("Starting OOM  tests...");
-        test_alloc_oom(1);
-        println("Finished OOM  tests!\n");
-
-        printf("All tests passed!\n\n");
-
-        uint32_t free_pages_after = count_free_pages();
-        printf("free_pages_before=%d, free_pages_after=%d, lost %d pages in "
-               "the process...",
-               free_pages_before, free_pages_after,
-               free_pages_before - free_pages_after);
-
+        mem_cmd_main();
         goto cmd_end;
       }
 
