@@ -23,6 +23,7 @@ void fat_mount(device_t *dev) {
       dev->read(lba, (uint8_t *)bs);
       break;
     }
+    kfree((uint32_t)bs);
     return;
   }
 
@@ -54,6 +55,8 @@ void fat_mount(device_t *dev) {
     dev->minfo.type = FAT32;
   else
     dev->minfo.type = EXFAT;
+  printf("total_clusters = %d\n", total_clusters);
+  kfree((uint32_t)bs);
 }
 
 void to_dos_file_name(char *name, char *str) {
@@ -342,21 +345,22 @@ void fat_ls(char *dir) {
 
   directory_t *direc = kmalloc(sizeof(directory_t));
 
-  for (int i = 0; i < 14; i++) {
-    dev->read(dev->minfo.root_offset + i, (uint8_t *)direc);
+  for (int i = 8; i < 14; i++) {
+
+    dev->read(i, (uint8_t *)direc);
+
     for (int j = 0; j < 16; j++, direc++) {
       if (((char *)direc->filename)[0] == 0)
         continue;
       to_normal_file_name((char *)direc->filename, normal_name);
-      printf("%s  ", normal_name);
+      printf("%s\n", normal_name);
     }
   }
-  printf("\n");
   kfree((uint32_t)normal_name);
 }
 
 void fat_init(filesystem *fs_fat) {
-  // fs_fat->mount = &fat_mount;
+  fs_fat->mount = &fat_mount;
   // fs_fat->read = &fat_read;
   // fs_fat->write = &fat_write;
   // fs_fat->close = &fat_close;

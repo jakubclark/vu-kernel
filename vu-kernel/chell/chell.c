@@ -2,6 +2,7 @@
 #include "chell/commands/colors_cmd.h"
 #include "chell/commands/memtest_cmd.h"
 #include "chell/commands/multiboot_cmd.h"
+#include "chell/commands/vfs_cmd.h"
 #include "drivers/pci/pci.h"
 #include "io/keyboard.h"
 #include "io/scrn.h"
@@ -125,29 +126,18 @@ void chell_main() {
         goto cmd_end;
       }
 
+      if (strcmp(cmd_buffer, (uint8_t *)"vfs") == 0) {
+        vfs_cmd_main();
+        goto cmd_end;
+      }
+
+      if (strcmp(cmd_buffer, (uint8_t *)"ls") == 0) {
+        vfs_cmd_ls();
+        goto cmd_end;
+      }
+
       if (strcmp(cmd_buffer, (uint8_t *)"mem") == 0) {
-        uint32_t free_pages_before = count_free_pages();
-
-        println("Starting easy tests...");
-        test_alloc_easy(0);
-        println("Finished easy tests!\n");
-
-        println("Starting hard tests...");
-        test_alloc_advanced(0);
-        println("Finished hard tests!\n");
-
-        println("Starting OOM  tests...");
-        test_alloc_oom(1);
-        println("Finished OOM  tests!\n");
-
-        printf("All tests passed!\n\n");
-
-        uint32_t free_pages_after = count_free_pages();
-        printf("free_pages_before=%d, free_pages_after=%d, lost %d pages in "
-               "the process...",
-               free_pages_before, free_pages_after,
-               free_pages_before - free_pages_after);
-
+        mem_cmd_main();
         goto cmd_end;
       }
 

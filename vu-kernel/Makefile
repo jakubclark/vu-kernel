@@ -17,6 +17,7 @@ OBJS := \
 	$(KERNEL_DIR)/chell/commands/colors_cmd.o \
 	$(KERNEL_DIR)/chell/commands/memtest_cmd.o \
 	$(KERNEL_DIR)/chell/commands/multiboot_cmd.o \
+	$(KERNEL_DIR)/chell/commands/vfs_cmd.o \
 	\
 	$(KERNEL_DIR)/fs/vfs.o \
 	$(KERNEL_DIR)/fs/fat.o \
