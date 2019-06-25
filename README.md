@@ -6,7 +6,9 @@
 
 The current target architecture is `i386`(32 bit version of the x86 ISA).
 
-A `RISC-V` port is planned, along with a possible port to `amd64` (64 bit version of the x86 ISA).
+* The kernel has a basic ATA driver, and a FAT12 filesystem implementation is being implemented.
+    * A VFS should be implemented on top of the FAT12 filesystem
+
 
 ## Prerequisites
 
@@ -46,11 +48,13 @@ This will create a bootable `.iso` file, used by `qemu`.
 ## TODO
 
 - [x] [Bootstrapping](https://jakubclark.github.io/jekyll/update/2019/04/18/bootstrapping.html)
-- [x] Hello World!
 - [x] [Printing to the screen](https://jakubclark.github.io/jekyll/update/2019/04/18/printing-to-the-screen.html)
 - [x] Reading from the keyboard
 - [x] Setting up the Global Descriptor Table
 - [x] Print Multiboot Information on startup
 - [x] Interrupt Handling
-- [ ] Physical Memory
-- [ ] Virtual Memory
+- [x] Physical Memory
+- [x] Virtual Memory
+- [x] ATA Driver
+- [ ] FAT12
+- [ ] VFS
