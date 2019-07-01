@@ -75,35 +75,18 @@ int vfs_delete(char *name) {
 file *vfs_file_open(char *name, uint8_t *mode) {
   int device = get_dev_id_by_name(name);
   file *f = kmalloc(sizeof(file));
-  if (device >= 0) {
-    if (devs[device]) {
-      *f = devs[device]->open(name + 1);
-      if (f->type == FS_FILE) {
-        if (strcmp(mode, (uint8_t *) "w") == 0) {
-          f->len = 0;
-        }
-        return f;
-      }
-    }
+
+  if ((device >= 0) && (devs[device])) {
+    *f = devs[device]->open(name);
+
+    if ((f->type == FS_FILE) && strcmp(mode, (uint8_t *)"w"))
+      f->len = 0;
+
+    return f;
   }
+
   f->type = FS_NULL;
   return f;
-}
-
-file *vfs_file_open_user(char *name, uint8_t *mode) {
-  file *f = (file *)kmalloc(sizeof(file));
-  int device = get_dev_id_by_name(name);
-  if (device >= 0 && devs[device]) {
-    file fil = devs[device]->open(name + 1);
-    memcpy_a((uint8_t *) f, &fil, sizeof(file));
-    if (f->type == FS_FILE) {
-      if (strcmp(mode, (uint8_t *) "w") == 0) {
-        f->len = 0;
-      }
-      return f;
-    }
-  }
-  return NULL;
 }
 
 void vfs_file_read(file *f, char *str) {
@@ -117,20 +100,9 @@ void vfs_file_write(file *f, char *str) {
 }
 
 void vfs_file_close(file *f) {
-  if (f) {
-    if (devs[f->dev]) {
-      devs[f->dev]->close(f);
-      kfree((uint32_t) f);
-    }
-  }
-}
-
-void vfs_file_close_user(file *f) {
-  if (f) {
-    if (devs[f->dev]) {
-      devs[f->dev]->close(f);
-      kfree((uint32_t) f);
-    }
+  if (f && devs[f->dev]) {
+    devs[f->dev]->close(f);
+    kfree((uint32_t)f);
   }
 }
 
