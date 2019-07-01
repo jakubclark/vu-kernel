@@ -1,5 +1,6 @@
 # VU-Kernel
 
+![VU-Kernel Logo](./resources/imgs/vu_kernel_logo.png)
 ## About
 
 `VU-Kernel` is a small kernel written in C.
@@ -56,6 +57,8 @@ This will create a bootable `.iso` file, used by `qemu`.
     - Builds a bootable iso image, with `VU-kernel` as the boot image
 
 ## Chell
+
+![Chell Logo](./resources/imgs/chell_logo.png)
 
 `Chell` is a shell-like [REPL](https://en.wikipedia.org/wiki/Read%E2%80%93eval%E2%80%93print_loop).
 
