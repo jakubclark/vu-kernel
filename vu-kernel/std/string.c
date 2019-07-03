@@ -21,7 +21,7 @@ int8_t strncmp(char *str1, char *str2, uint32_t len) {
     return 0;
 }
 
-char *strchr(char *str, int c) {
+char *strchr(char *str, char c) {
     while(*str) {
         if(*str == c)
             return str;

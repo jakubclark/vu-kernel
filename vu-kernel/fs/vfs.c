@@ -37,7 +37,7 @@ int vfs_cd(char *name) {
   int device = get_dev_id_by_name(name);
   if (device >= 0) {
     if (devs[device]) {
-      char *p = strchr(name + 1, '/');
+      char *p = strchr(name, '/');
       if (p) {
         file f = devs[device]->cd(name + 1);
         if (f.type == FS_DIR) {
