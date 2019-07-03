@@ -291,9 +291,7 @@ void fat_ls(char *dir) {
       if (((char *)direc->filename)[0] == 0)
         continue;
       to_normal_file_name((char *)direc->filename, normal_name);
-      printf("file_size=%d\tdate_created=%d\tname=%s | first_cluster=%d\n",
-              direc->date_created, direc->file_size, normal_name,
-              direc->first_cluster);
+      printf("file_size=%d\tname=%s\n", direc->file_size, direc->filename);
     }
   }
   kfree((uint32_t)normal_name);
