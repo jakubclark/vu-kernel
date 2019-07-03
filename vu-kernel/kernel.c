@@ -83,8 +83,10 @@ void init(uint32_t magic, multiboot_info_t *mbi) {
   for (uint8_t i = 0; i < 80; i++)
     putchar('-');
 
-  printf("| The system has %d bytes of physical memory\t\t\t\t\t\t\t  |\n",
-         phys_mem_bytes);
+  uint32_t mbytes = phys_mem_bytes / 1024 / 1024;
+
+  printf("| The system has %d MB of physical memory\t\t\t\t\t\t\t\t\t  |\n",
+         mbytes+1);
 
   for (uint8_t i = 0; i < 80; i++)
     putchar('-');

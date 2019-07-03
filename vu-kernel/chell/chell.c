@@ -35,7 +35,8 @@ uint8_t *chell_logo =
 void print_prompt() {
   puts_col((uint8_t *)"user", LIGHTBLUE, DEFAULTBACKGROUND);
   puts_col((uint8_t *)"@", GREEN, DEFAULTBACKGROUND);
-  puts_col((uint8_t *)"vu> ", RED, DEFAULTBACKGROUND);
+  puts_col((uint8_t *) vfs_cmd_pwd(), RED, DEFAULTBACKGROUND);
+  puts_col((uint8_t *) ">", RED, DEFAULTBACKGROUND);
 }
 
 /* Prints the Chell logo */
@@ -81,7 +82,7 @@ void chell_main() {
   IN_SHELL = 1;
 
   /* The len of "user@vu>"*/
-  min_x = 9;
+  min_x = strlen("user@") + strlen((char*)  vfs_cmd_pwd);
   print_welcome();
 
   while (1) {
@@ -138,6 +139,24 @@ void chell_main() {
 
       if (strcmp(cmd_buffer, (uint8_t *)"mem") == 0) {
         mem_cmd_main();
+        goto cmd_end;
+      }
+
+      if(strcmp(cmd_buffer, (uint8_t *)"pwd") == 0){
+        char* res =  vfs_cmd_pwd();
+        printf("%s", res);
+        goto cmd_end;
+      }
+
+      if ((cmd_buffer[0] == 'c') && (cmd_buffer[1] == 'd')){
+        int res = vfs_cmd_cd((char*) cmd_buffer+3);
+
+        if(res == 1){
+          printf("%s exists\n", cmd_buffer+3);
+        }else{
+          printf("%s does not exist\n", cmd_buffer+3);
+        }
+
         goto cmd_end;
       }
 
